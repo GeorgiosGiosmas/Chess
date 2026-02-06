@@ -5,34 +5,36 @@ class Piece():
     def piece_get_valid_moves(self):
         pass
 
-    def move(self):
+    def has_moved(self):
         pass
+
 
 
 class Pawn(Piece):
     def __init__(self, colour):
         super().__init__(colour)
+        self.moved = False
 
     def __str__(self):
-        return str("Pa" + self.colour)
+        return str("Pa" + self.colour.upper())
 
     def piece_get_valid_moves(self):
         pass
     
-    def move(self):
-        pass
+    def has_moved(self):
+        return self.moved
 
 class Bishop(Piece):
     def __init__(self, colour):
         super().__init__(colour)
 
     def __str__(self):
-        return str("Bi" + self.colour)
+        return str("Bi" + self.colour.upper())
 
     def piece_get_valid_moves(self):
         pass
     
-    def move(self):
+    def has_moved(self):
         pass
 
 class Knight(Piece):
@@ -40,52 +42,54 @@ class Knight(Piece):
         super().__init__(colour)
 
     def __str__(self):
-        return str("Kn" + self.colour)
+        return str("Kn" + self.colour.upper())
 
     def piece_get_valid_moves(self):
         pass
     
-    def move(self):
+    def has_moved(self):
         pass
 
 class Rook(Piece):
     def __init__(self, colour):
         super().__init__(colour)
+        self.moved = False
 
     def __str__(self):
-        return str("Rk" + self.colour)
+        return str("Rk" + self.colour.upper())
     
     def piece_get_valid_moves(self):
         pass
     
-    def move(self):
-        pass
+    def has_moved(self):
+        return self.moved
 
 class Queen(Piece):
     def __init__(self, colour):
         super().__init__(colour)
 
     def __str__(self):
-        return str("Qu" + self.colour)
+        return str("Qu" + self.colour.upper())
 
     def piece_get_valid_moves(self):
         pass
     
-    def move(self):
+    def has_moved(self):
         pass
 
 class King(Piece):
     def __init__(self, colour):
         super().__init__(colour)
+        self.moved = False
 
     def __str__(self):
-        return str("Ki" + self.colour)
+        return str("Ki" + self.colour.upper())
 
     def piece_get_valid_moves(self):
         pass
     
-    def move(self):
-        pass
+    def has_moved(self):
+        return self.moved
 
 
 if __name__ == "__main__":
