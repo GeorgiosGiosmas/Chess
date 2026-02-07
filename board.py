@@ -1,7 +1,7 @@
-from piece import King, Knight, Queen, Bishop, Rook, Pawn
+from piece import King, Knight, Queen, Bishop, Rook, Pawn, Piece
 
 class Square():
-    def __init__(self, rank, file, colour, piece_on_square = None):
+    def __init__(self, rank, file, colour, piece_on_square: Piece = None):
         self.rank = rank
         self.file = file
         self.colour = colour
@@ -9,6 +9,9 @@ class Square():
 
     def __str__(self):
         return str(self.rank) + str(self.file) + str(self.colour)
+    
+    def square_rank_file(self):
+        return self.rank, self.file
     
     def occupied_by_piece(self):
         if self.piece_on_square is None: return ' E '
@@ -69,7 +72,9 @@ class Board():
         for i in range(1, 9):
             self.board[self.files.index('2')][self.files.index(f"{i}")].piece_on_square = Pawn('w')
             self.board[self.files.index('7')][self.files.index(f"{i}")].piece_on_square = Pawn('b')
-                
+
+    def demo_initialize(self):
+        pass
 
     def print_board_state(self):
         #     -------------------------------------------------
