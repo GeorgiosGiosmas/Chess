@@ -63,7 +63,7 @@ class Board():
         self.board[self.files.index('8')][self.ranks.index('b')].piece_on_square = Knight('b')
 
         # Initialize the Rooks
-        self.board[self.files.index('1')][self.ranks.index('h')].piece_on_square = Rook('w')
+        self.board[self.files.index('5')][self.ranks.index('e')].piece_on_square = Rook('w') # ??????????????????????????????????
         self.board[self.files.index('1')][self.ranks.index('a')].piece_on_square = Rook('w')
         self.board[self.files.index('8')][self.ranks.index('h')].piece_on_square = Rook('b')
         self.board[self.files.index('8')][self.ranks.index('a')].piece_on_square = Rook('b')
@@ -74,7 +74,10 @@ class Board():
             self.board[self.files.index('7')][self.files.index(f"{i}")].piece_on_square = Pawn('b')
 
     def demo_initialize(self):
-        pass
+        self.board[self.files.index('4')][self.ranks.index('e')].piece_on_square = Pawn('w')
+        self.board[self.files.index('5')][self.ranks.index('f')].piece_on_square = Pawn('b')
+        self.board[self.files.index('5')][self.ranks.index('d')].piece_on_square = Pawn('b')
+        self.board[self.files.index('6')][self.ranks.index('e')].piece_on_square = Pawn('w')
 
     def print_board_state(self):
         #     -------------------------------------------------
@@ -107,11 +110,28 @@ class Board():
 
     def board_get_square(self, square: str) -> Square:
         return self.board[self.files.index(square[1])][self.ranks.index(square[0])]
+    
+    def from_rank_get_index(self, rank):
+        return self.ranks.index(rank)
+    
+    def from_index_get_rank(self, index):
+        return self.ranks[index]
+    
+    def from_file_get_index(self, file):
+        return self.files.index(file)
+    
+    def from_index_get_file(self, file):
+        return self.files[file]
+    
+    def make_move(self, from_square: Square, to_square: Square):
+        pass
 
 if __name__ == "__main__":
     
     b = Board()
     b.board_initialize_pieces()
+    b.demo_initialize()
     b.print_board_state()
-    a = b.board_get_square('e1')
-    print(a.occupied_by_piece())
+    a = b.board_get_square('e5')
+    print(a)
+    print(a.piece_on_square.piece_get_valid_moves(a ,b))

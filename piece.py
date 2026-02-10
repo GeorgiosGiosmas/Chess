@@ -1,5 +1,3 @@
-from board import Square, Board
-
 class Piece():
     def __init__(self, colour):
         self.colour = colour
@@ -60,51 +58,79 @@ class Rook(Piece):
     def __str__(self):
         return str("Rk" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square: Square, board: Board) -> list:
+    def piece_get_valid_moves(self, current_square, board) -> list:
         piece_valid_moves = []
 
-        if(current_square.piece_on_square != Rook()):
-            print("This square doesn't contain a Rook")
-            return piece_valid_moves
-        
+        if(current_square.piece_on_square is None):
+            print("Empty square")
+            return
+
         rank, file = current_square.square_rank_file()
-        row, col = board.board_get_square(f"{file}{rank}") # ???????????????????????????????????????
+        row, col = board.from_file_get_index(file), board.from_rank_get_index(rank)
 
         # Check the all the squares right of the square
-        for i in range(row, 9):
-            # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+        for i in range(row+1, 8):
+            if board.board[i][col].piece_on_square is not None:
+                # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+                if board.board[i][col].piece_on_square.colour == current_square.piece_on_square.colour:
+                    break
 
-            # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                else:
+                    piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
+                    break
 
             # Otherwise keep adding every square as a valid move until the end of the iteration
-            pass
+            else:
+                piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
 
         # Check the all the squares left of the square
-        for i in range(row, 0, -1):
-            # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+        for i in range(row-1, -1, -1):
+            if board.board[i][col].piece_on_square is not None:
+                ## If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+                if board.board[i][col].piece_on_square.colour == current_square.piece_on_square.colour:
+                    break
 
-            # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
-
+                # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                else:
+                    piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
+                    break
+                
             # Otherwise keep adding every square as a valid move until the end of the iteration
-            pass
+            else:
+                piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
         
         # Check the all the squares above the square
-        for j in range(col, 9):
-            # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+        for j in range(col+1, 8):
+            if board.board[row][j].piece_on_square is not None:
+                # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+                if board.board[row][j].piece_on_square.colour == current_square.piece_on_square.colour:
+                    break
 
-            # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                else:
+                    piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
+                    break
 
             # Otherwise keep adding every square as a valid move until the end of the iteration
-            pass
+            else:
+                piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
 
         # Check the all the squares below the square
-        for j in range(col, 0, -1):
-            # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+        for j in range(col-1, -1, -1):
+            if board.board[row][j].piece_on_square is not None:
+                # If you find a piece of the same colour stop checking, you can't move this way -> Break the iteration
+                if board.board[row][j].piece_on_square.colour == current_square.piece_on_square.colour:
+                    break
 
-            # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
+                else:
+                    piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
+                    break
 
             # Otherwise keep adding every square as a valid move until the end of the iteration
-            pass
+            else:
+                piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
 
         return piece_valid_moves
         
