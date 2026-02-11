@@ -56,53 +56,12 @@ class Knight(Piece):
 
         # Check which of the 8 possible moves are valid
 
-        # Move - 1
-        a, b = row + 1, col + 2
-        if(a <= 7 and b <= 7):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 2
-        a, b = row + 2, col + 1
-        if(a <= 7 and b <= 7):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 3
-        a, b = row + 2, col - 1
-        if(a <= 7 and b >= 0):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 4
-        a, b = row + 1, col -2
-        if(a <= 7 and b >= 0):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 5
-        a, b = row - 1, col - 2
-        if(a >= 0 and b >= 0):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 6
-        a, b = row - 2, col - 1
-        if(a >= 0 and b >= 0):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 7
-        a, b = row - 2, col + 1
-        if(a >= 0 and b <= 7):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
-
-        # Move - 8
-        a, b = row - 1, col + 2
-        if(a >= 0 and b <= 7):
-            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+        offsets = [(1,2), (2,1), (2,-1), (1,-2), (-1,-2), (-2,-1), (-2,1), (-1,2)]
+        for da, db in offsets:
+            a, b = row + da, col + db
+            if(0 <= a <= 7  and 0 <= b <= 7):
+                if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                    piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
         return piece_valid_moves
     
