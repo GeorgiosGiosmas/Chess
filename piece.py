@@ -45,7 +45,66 @@ class Knight(Piece):
         return str("Kn" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
-        pass
+        piece_valid_moves = []
+
+        if(current_square.piece_on_square is None):
+            print("Empty square")
+            return
+
+        rank, file = current_square.square_rank_file()
+        row, col = board.from_rank_get_index(rank), board.from_file_get_index(file)
+
+        # Check which of the 8 possible moves are valid
+
+        # Move - 1
+        a, b = row + 1, col + 2
+        if(a <= 7 and b <= 7):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 2
+        a, b = row + 2, col + 1
+        if(a <= 7 and b <= 7):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 3
+        a, b = row + 2, col - 1
+        if(a <= 7 and b >= 0):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 4
+        a, b = row + 1, col -2
+        if(a <= 7 and b >= 0):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 5
+        a, b = row - 1, col - 2
+        if(a >= 0 and b >= 0):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 6
+        a, b = row - 2, col - 1
+        if(a >= 0 and b >= 0):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 7
+        a, b = row - 2, col + 1
+        if(a >= 0 and b <= 7):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        # Move - 8
+        a, b = row - 1, col + 2
+        if(a >= 0 and b <= 7):
+            if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
+                piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+
+        return piece_valid_moves
     
     def has_moved(self):
         pass

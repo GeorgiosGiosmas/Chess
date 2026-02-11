@@ -57,13 +57,13 @@ class Board():
         self.board[self.ranks.index('8')][self.files.index('c')].piece_on_square = Bishop('b')
 
         # Initialize the Knights
-        self.board[self.ranks.index('1')][self.files.index('g')].piece_on_square = Knight('w')
+        self.board[self.ranks.index('5')][self.files.index('e')].piece_on_square = Knight('w') # ??????????????????????????????????
         self.board[self.ranks.index('1')][self.files.index('b')].piece_on_square = Knight('w')
         self.board[self.ranks.index('8')][self.files.index('g')].piece_on_square = Knight('b')
         self.board[self.ranks.index('8')][self.files.index('b')].piece_on_square = Knight('b')
 
         # Initialize the Rooks
-        self.board[self.ranks.index('5')][self.files.index('e')].piece_on_square = Rook('w') # ??????????????????????????????????
+        self.board[self.ranks.index('1')][self.files.index('h')].piece_on_square = Rook('w') 
         self.board[self.ranks.index('1')][self.files.index('a')].piece_on_square = Rook('w')
         self.board[self.ranks.index('8')][self.files.index('h')].piece_on_square = Rook('b')
         self.board[self.ranks.index('8')][self.files.index('a')].piece_on_square = Rook('b')
