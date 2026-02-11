@@ -27,14 +27,14 @@ class Board():
         self.captured_white_pawns = []
         self.board = []
 
-        self.ranks = "abcdefgh"
-        self.files = "12345678"
+        self.files = "abcdefgh"
+        self.ranks = "12345678"
 
-        for col in range(len(self.files)):
+        for row in range(len(self.ranks)):
             r = []
-            if col%2 == 0: colour = "b"
+            if row%2 == 0: colour = "b"
             else: colour = "w"
-            for row in range(len(self.ranks)):
+            for col in range(len(self.files)):
                 square = Square(self.ranks[row], self.files[col], colour)
                 r.append(square)
                 if colour == "b": colour = "w"
@@ -43,41 +43,41 @@ class Board():
 
     def board_initialize_pieces(self):
         # Initialize the Kings
-        self.board[self.files.index('1')][self.ranks.index('e')].piece_on_square = King('w')
-        self.board[self.files.index('8')][self.ranks.index('e')].piece_on_square = King('b')
+        self.board[self.ranks.index('1')][self.files.index('e')].piece_on_square = King('w')
+        self.board[self.ranks.index('8')][self.files.index('e')].piece_on_square = King('b')
 
         # Initialize the Queens
-        self.board[self.files.index('1')][self.ranks.index('d')].piece_on_square = Queen('w')
-        self.board[self.files.index('8')][self.ranks.index('d')].piece_on_square = Queen('b')
+        self.board[self.ranks.index('1')][self.files.index('d')].piece_on_square = Queen('w')
+        self.board[self.ranks.index('8')][self.files.index('d')].piece_on_square = Queen('b')
 
         # Initialize the Bishops
-        self.board[self.files.index('1')][self.ranks.index('f')].piece_on_square = Bishop('w')
-        self.board[self.files.index('1')][self.ranks.index('c')].piece_on_square = Bishop('w')
-        self.board[self.files.index('8')][self.ranks.index('f')].piece_on_square = Bishop('b')
-        self.board[self.files.index('8')][self.ranks.index('c')].piece_on_square = Bishop('b')
+        self.board[self.ranks.index('1')][self.files.index('f')].piece_on_square = Bishop('w')
+        self.board[self.ranks.index('1')][self.files.index('c')].piece_on_square = Bishop('w')
+        self.board[self.ranks.index('8')][self.files.index('f')].piece_on_square = Bishop('b')
+        self.board[self.ranks.index('8')][self.files.index('c')].piece_on_square = Bishop('b')
 
         # Initialize the Knights
-        self.board[self.files.index('1')][self.ranks.index('g')].piece_on_square = Knight('w')
-        self.board[self.files.index('1')][self.ranks.index('b')].piece_on_square = Knight('w')
-        self.board[self.files.index('8')][self.ranks.index('g')].piece_on_square = Knight('b')
-        self.board[self.files.index('8')][self.ranks.index('b')].piece_on_square = Knight('b')
+        self.board[self.ranks.index('1')][self.files.index('g')].piece_on_square = Knight('w')
+        self.board[self.ranks.index('1')][self.files.index('b')].piece_on_square = Knight('w')
+        self.board[self.ranks.index('8')][self.files.index('g')].piece_on_square = Knight('b')
+        self.board[self.ranks.index('8')][self.files.index('b')].piece_on_square = Knight('b')
 
         # Initialize the Rooks
-        self.board[self.files.index('5')][self.ranks.index('e')].piece_on_square = Rook('w') # ??????????????????????????????????
-        self.board[self.files.index('1')][self.ranks.index('a')].piece_on_square = Rook('w')
-        self.board[self.files.index('8')][self.ranks.index('h')].piece_on_square = Rook('b')
-        self.board[self.files.index('8')][self.ranks.index('a')].piece_on_square = Rook('b')
+        self.board[self.ranks.index('5')][self.files.index('e')].piece_on_square = Rook('w') # ??????????????????????????????????
+        self.board[self.ranks.index('1')][self.files.index('a')].piece_on_square = Rook('w')
+        self.board[self.ranks.index('8')][self.files.index('h')].piece_on_square = Rook('b')
+        self.board[self.ranks.index('8')][self.files.index('a')].piece_on_square = Rook('b')
 
         # Initialize the Pawns
-        for i in range(1, 9):
-            self.board[self.files.index('2')][self.files.index(f"{i}")].piece_on_square = Pawn('w')
-            self.board[self.files.index('7')][self.files.index(f"{i}")].piece_on_square = Pawn('b')
+        for i in range(0, 8):
+            self.board[self.ranks.index('2')][i].piece_on_square = Pawn('w')
+            self.board[self.ranks.index('7')][i].piece_on_square = Pawn('b')
 
     def demo_initialize(self):
-        self.board[self.files.index('4')][self.ranks.index('e')].piece_on_square = Pawn('w')
-        self.board[self.files.index('5')][self.ranks.index('f')].piece_on_square = Pawn('b')
-        self.board[self.files.index('5')][self.ranks.index('d')].piece_on_square = Pawn('b')
-        self.board[self.files.index('6')][self.ranks.index('e')].piece_on_square = Pawn('w')
+        self.board[self.ranks.index('6')][self.files.index('e')].piece_on_square = Pawn('w')
+        self.board[self.ranks.index('5')][self.files.index('f')].piece_on_square = Pawn('b')
+        self.board[self.ranks.index('5')][self.files.index('d')].piece_on_square = Pawn('w')
+        self.board[self.ranks.index('4')][self.files.index('e')].piece_on_square = Pawn('b')
 
     def print_board_state(self):
         #     -------------------------------------------------
@@ -100,16 +100,16 @@ class Board():
         #        a     b     c     d     e     f     g     h  
 
         print("     -------------------------------------------------")
-        for col in range(8):
-            print(f"  {8-col}  |", end="")
-            for row in range(8):
-                print(f" {self.board[7-col][row].occupied_by_piece()} |", end="")
+        for row in range(8):
+            print(f"  {8-row}  |", end="")
+            for col in range(8):
+                print(f" {self.board[7-row][col].occupied_by_piece()} |", end="")
             print()
             print("     -------------------------------------------------")
         print("        a     b     c     d     e     f     g     h   ")
 
     def board_get_square(self, square: str) -> Square:
-        return self.board[self.files.index(square[1])][self.ranks.index(square[0])]
+        return self.board[self.ranks.index(square[1])][self.files.index(square[0])]
     
     def from_rank_get_index(self, rank):
         return self.ranks.index(rank)

@@ -66,7 +66,7 @@ class Rook(Piece):
             return
 
         rank, file = current_square.square_rank_file()
-        row, col = board.from_file_get_index(file), board.from_rank_get_index(rank)
+        row, col = board.from_rank_get_index(rank), board.from_file_get_index(file)
 
         # Check the all the squares right of the square
         for i in range(row+1, 8):
@@ -77,12 +77,12 @@ class Rook(Piece):
 
                 # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
+                    piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(i))
                     break
 
             # Otherwise keep adding every square as a valid move until the end of the iteration
             else:
-                piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
+                piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(i))
 
         # Check the all the squares left of the square
         for i in range(row-1, -1, -1):
@@ -93,12 +93,12 @@ class Rook(Piece):
 
                 # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
+                    piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(i))
                     break
                 
             # Otherwise keep adding every square as a valid move until the end of the iteration
             else:
-                piece_valid_moves.append(board.from_index_get_rank(col) + board.from_index_get_file(i))
+                piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(i))
         
         # Check the all the squares above the square
         for j in range(col+1, 8):
@@ -109,12 +109,12 @@ class Rook(Piece):
 
                 # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
+                    piece_valid_moves.append(board.from_index_get_file(j) + board.from_index_get_rank(row))
                     break
 
             # Otherwise keep adding every square as a valid move until the end of the iteration
             else:
-                piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
+                piece_valid_moves.append(board.from_index_get_file(j) + board.from_index_get_rank(row))
 
         # Check the all the squares below the square
         for j in range(col-1, -1, -1):
@@ -125,12 +125,12 @@ class Rook(Piece):
 
                 # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
+                    piece_valid_moves.append(board.from_index_get_file(j) + board.from_index_get_rank(row))
                     break
 
             # Otherwise keep adding every square as a valid move until the end of the iteration
             else:
-                piece_valid_moves.append(board.from_index_get_rank(j) + board.from_index_get_file(row))
+                piece_valid_moves.append(board.from_index_get_file(j) + board.from_index_get_rank(row))
 
         return piece_valid_moves
         
