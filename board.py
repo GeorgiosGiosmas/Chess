@@ -43,11 +43,11 @@ class Board():
 
     def board_initialize_pieces(self):
         # Initialize the Kings
-        self.board[self.ranks.index('1')][self.files.index('e')].piece_on_square = King('w')
+        self.board[self.ranks.index('6')][self.files.index('c')].piece_on_square = King('w') 
         self.board[self.ranks.index('8')][self.files.index('e')].piece_on_square = King('b')
 
         # Initialize the Queens
-        self.board[self.ranks.index('5')][self.files.index('b')].piece_on_square = Queen('w') # ??????????????????????????????????
+        self.board[self.ranks.index('1')][self.files.index('d')].piece_on_square = Queen('w') 
         self.board[self.ranks.index('8')][self.files.index('d')].piece_on_square = Queen('b')
 
         # Initialize the Bishops
@@ -132,6 +132,6 @@ if __name__ == "__main__":
     b.board_initialize_pieces()
     b.demo_initialize()
     b.print_board_state()
-    a = b.board_get_square('b5')
+    a = b.board_get_square('f5')
     print(a)
     print(a.piece_on_square.piece_get_valid_moves(a ,b))
