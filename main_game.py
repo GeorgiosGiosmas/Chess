@@ -1,15 +1,21 @@
 from piece import *
 from board import *
 
+# Human plays
+def human_plays():
+    global board, what_happened, history
+
+# Computer plays - We will implement it later
+def computer_plays():
+    global board, what_happened, history
 
 # When Black plays
 def Black_plays():
-    global board, what_happened, history
-
+    human_plays()
 
 # When White plays
 def White_plays():
-    global board, what_happened, history
+    human_plays()
 
 # Prints the state of the board after every move
 def print_info():

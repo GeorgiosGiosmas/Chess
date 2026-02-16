@@ -123,6 +123,13 @@ class Board():
     def from_index_get_file(self, file):
         return self.files[file]
     
+    def get_all_pieces_moves(self):
+        for row in range(8):
+            for col in range(8):
+                if self.board[row][col].piece_on_square is not None:
+                    self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self.board)
+
+    
     def make_move(self, from_square: Square, to_square: Square):
         pass
 
