@@ -1,6 +1,7 @@
 class Piece():
     def __init__(self, colour):
         self.colour = colour
+        self.valid_moves = []
 
     def piece_get_valid_moves(self, current_square, board):
         pass
@@ -19,12 +20,12 @@ class Pawn(Piece):
         return str("Pa" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
-        piece_valid_moves = []
+        self.valid_moves = []
 
         if(current_square.piece_on_square is None):
             print("Empty square")
             return
-
+        
         rank, file = current_square.square_rank_file()
         row, col = board.from_rank_get_index(rank), board.from_file_get_index(file)
 
@@ -32,18 +33,18 @@ class Pawn(Piece):
         if(current_square.piece_on_square.colour == 'w'):
 
             if (row + 1) <= 7 and board.board[row + 1][col].piece_on_square is None:
-                piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row + 1))
+                self.valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row + 1))
             
                 # If pawn hasn't moved yet it can go up two squares if it is desired 
                 if(row == 1):
                     if board.board[row + 2][col].piece_on_square is None:
-                        piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row + 2))
+                        self.valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row + 2))
 
             # The pawn captures diagonally
             if (row + 1) <= 7 and (col + 1) <= 7 and board.board[row + 1][col + 1].piece_on_square is not None and board.board[row + 1][col + 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    piece_valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row + 1))
+                    self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row + 1))
             if (row + 1) <= 7 and (col - 1) >= 0 and board.board[row + 1][col - 1].piece_on_square is not None and board.board[row + 1][col - 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    piece_valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))
+                    self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))
 
             # En Passant -> Later ...
 
@@ -53,25 +54,25 @@ class Pawn(Piece):
         else:
 
             if (row - 1) >= 0 and board.board[row - 1][col].piece_on_square is None:
-                piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row - 1))
+                self.valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row - 1))
             
                 # If pawn hasn't moved yet it can go up two squares if it is desired 
                 if(row == 6):
                     if board.board[row - 2][col].piece_on_square is None:
-                        piece_valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row - 2))
+                        self.valid_moves.append(board.from_index_get_file(col) + board.from_index_get_rank(row - 2))
 
             # The pawn captures diagonally
             if (row - 1) >= 0 and (col - 1) >= 0 and board.board[row - 1][col - 1].piece_on_square is not None and board.board[row - 1][col - 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    piece_valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row - 1))
+                    self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row - 1))
             if (row - 1) >= 0 and (col + 1) <= 7 and board.board[row - 1][col + 1].piece_on_square is not None and board.board[row - 1][col + 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    piece_valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))
+                    self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))
 
 
             # En Passant -> Later ...
 
             # Promotion -> Later ...
 
-        return piece_valid_moves
+        return self.valid_moves
     
     def has_moved(self):
         return self.moved
@@ -84,7 +85,7 @@ class Bishop(Piece):
         return str("Bi" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
-        piece_valid_moves = []
+        self.valid_moves = []
 
         if(current_square.piece_on_square is None):
             print("Empty square")
@@ -106,17 +107,17 @@ class Bishop(Piece):
 
                     # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                     else:
-                        piece_valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                        self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
                         break
 
                 # Otherwise keep adding every square as a valid move until the end of the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                    self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
 
                 r += dr
                 c += dc
 
-        return piece_valid_moves
+        return self.valid_moves
     
     def has_moved(self):
         pass
@@ -129,7 +130,7 @@ class Knight(Piece):
         return str("Kn" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
-        piece_valid_moves = []
+        self.valid_moves = []
 
         if(current_square.piece_on_square is None):
             print("Empty square")
@@ -144,9 +145,9 @@ class Knight(Piece):
             a, b = row + da, col + db
             if(0 <= a <= 7  and 0 <= b <= 7):
                 if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                    piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+                    self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
-        return piece_valid_moves
+        return self.valid_moves
     
     def has_moved(self):
         pass
@@ -160,7 +161,7 @@ class Rook(Piece):
         return str("Rk" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board) -> list:
-        piece_valid_moves = []
+        self.valid_moves = []
 
         if(current_square.piece_on_square is None):
             print("Empty square")
@@ -182,17 +183,17 @@ class Rook(Piece):
 
                     # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                     else:
-                        piece_valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                        self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
                         break
 
                 # Otherwise keep adding every square as a valid move until the end of the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                    self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
 
                 r += dr
                 c += dc
 
-        return piece_valid_moves
+        return self.valid_moves
         
     
     def has_moved(self):
@@ -206,7 +207,7 @@ class Queen(Piece):
         return str("Qu" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
-        piece_valid_moves = []
+        self.valid_moves = []
 
         if(current_square.piece_on_square is None):
             print("Empty square")
@@ -231,17 +232,17 @@ class Queen(Piece):
 
                     # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                     else:
-                        piece_valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                        self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
                         break
 
                 # Otherwise keep adding every square as a valid move until the end of the iteration
                 else:
-                    piece_valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                    self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
 
                 r += dr
                 c += dc
 
-        return piece_valid_moves
+        return self.valid_moves
 
     
     def has_moved(self):
@@ -256,7 +257,7 @@ class King(Piece):
         return str("Ki" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
-        piece_valid_moves = []
+        self.valid_moves = []
 
         if(current_square.piece_on_square is None):
             print("Empty square")
@@ -271,9 +272,9 @@ class King(Piece):
             a, b = row + da, col + db
             if(0 <= a <= 7  and 0 <= b <= 7):
                 if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                    piece_valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+                    self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
-        return piece_valid_moves
+        return self.valid_moves
     
     def has_moved(self):
         return self.moved

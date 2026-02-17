@@ -127,12 +127,28 @@ class Board():
         for row in range(8):
             for col in range(8):
                 if self.board[row][col].piece_on_square is not None:
-                    self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self.board)
+                    self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self)
 
     
-    def make_move(self, from_square: Square, to_square: Square):
-        pass
+    def make_move(self, from_square: str, to_square: str):
+        current_square = self.board_get_square(from_square)
+        
+        if(to_square in current_square.piece_on_square.valid_moves):
+            future_square = self.board_get_square(to_square)
 
+            if(future_square.piece_on_square is not None):
+                if(future_square.piece_on_square.colour == 'b'):
+                    self.captured_black_pawns.append(future_square.piece_on_square.__str__())
+                else:
+                    self.captured_white_pawns.append(future_square.piece_on_square.__str__())
+
+            future_square.piece_on_square = current_square.piece_on_square
+            current_square.piece_on_square = None
+
+            return 0
+        else:
+            return -1
+        
 if __name__ == "__main__":
     
     b = Board()
