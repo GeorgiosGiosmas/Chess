@@ -17,7 +17,7 @@ class Pawn(Piece):
         self.moved = False
 
     def __str__(self):
-        return str("Pa" + self.colour.upper())
+        return str("P" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
         self.valid_moves = []
@@ -82,7 +82,7 @@ class Bishop(Piece):
         super().__init__(colour)
 
     def __str__(self):
-        return str("Bi" + self.colour.upper())
+        return str("B" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
         self.valid_moves = []
@@ -127,7 +127,7 @@ class Knight(Piece):
         super().__init__(colour)
 
     def __str__(self):
-        return str("Kn" + self.colour.upper())
+        return str("N" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
         self.valid_moves = []
@@ -158,7 +158,7 @@ class Rook(Piece):
         self.moved = False
 
     def __str__(self):
-        return str("Rk" + self.colour.upper())
+        return str("R" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board) -> list:
         self.valid_moves = []
@@ -204,7 +204,7 @@ class Queen(Piece):
         super().__init__(colour)
 
     def __str__(self):
-        return str("Qu" + self.colour.upper())
+        return str("Q" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
         self.valid_moves = []
@@ -254,7 +254,7 @@ class King(Piece):
         self.moved = False
 
     def __str__(self):
-        return str("Ki" + self.colour.upper())
+        return str("K" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board):
         self.valid_moves = []

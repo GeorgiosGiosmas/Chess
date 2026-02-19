@@ -130,7 +130,9 @@ class Board():
                     self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self)
 
     
-    def make_move(self, from_square: str, to_square: str):
+    def make_move(self, from_square: str, to_square: str, history: list):
+
+        history_string = ""
         current_square = self.board_get_square(from_square)
         
         if(to_square in current_square.piece_on_square.valid_moves):
@@ -142,8 +144,16 @@ class Board():
                 else:
                     self.captured_white_pawns.append(future_square.piece_on_square.__str__())
 
+            piece = current_square.piece_on_square.__str__()[0] # Identify only the pice. We don't care about the colour
+
             future_square.piece_on_square = current_square.piece_on_square
             current_square.piece_on_square = None
+
+            if(piece=='P'):
+                history_string = str(len(history)+1) + "." + to_square + history_string
+            else:
+                history_string = str(len(history)+1) + "." + piece + to_square + history_string
+            history.append(history_string)
 
             return 0
         else:
