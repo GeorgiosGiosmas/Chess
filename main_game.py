@@ -5,6 +5,7 @@ from board import *
 def human_plays(colour):
     global board, what_happened, history
     NotValidMoveException = Exception()
+    YouHaveToMoveTheKingException = Exception()
 
     while True:
         print_info()
@@ -19,9 +20,16 @@ def human_plays(colour):
             if(board.board_get_square(from_square).piece_on_square is None or board.board_get_square(from_square).piece_on_square.colour != colour):
                 print("No valid piece on that square. Try again")
             else:
-                if(board.make_move(from_square, to_square) == 0):
-
-                    history.append()
+                '''
+                piece = board.board_get_square(from_square).piece_on_square.__str__()[0]
+                if(colour == 'w' and board.white_king_check == True):
+                    if(piece != "K"):
+                        raise YouHaveToMoveTheKingException
+                elif(colour == 'b' and board.black_king_check == True):
+                    if(piece != "K"):
+                        raise YouHaveToMoveTheKingException
+                '''
+                if(board.make_move(from_square, to_square, history) == 0):
                     break
 
         except Exception as e:
@@ -50,8 +58,12 @@ def print_info():
 
     if what_happened == "Black Played":
         print("The Black played: ", history[-1])
+        if(board.white_king_check == True):
+            print("Your King is in check you have to move him!")
     if what_happened == "White Played":
         print("The White played: ", history[-1])
+        if(board.black_king_check == True):
+            print("Your King is in check you have to move him!")
 
     board.print_board_state()
 
@@ -67,6 +79,10 @@ def initial():
 # Examines if we have a Check, CheckMate, or Draw
 def examine():
     global board, what_happened, history
+
+    # Check if either one of the two Kings is in check. If so, add + to the last move
+    if(board.black_king_check == True or board.white_king_check == True):
+        history[-1] = history[-1] + "+"
 
 # Alternates the playing sequence between black and white
 def next_turn():

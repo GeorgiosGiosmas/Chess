@@ -42,9 +42,21 @@ class Pawn(Piece):
 
             # The pawn captures diagonally
             if (row + 1) <= 7 and (col + 1) <= 7 and board.board[row + 1][col + 1].piece_on_square is not None and board.board[row + 1][col + 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row + 1))
+                # Examine if this move checks the opponent's King
+                if(board.board[row+1][col+1].piece_on_square.__str__()[0] == "K"):
+                    if(current_square.piece_on_square.colour == 'w'):
+                        board.black_king_check = True
+                    else:
+                        board.white_king_check = True
+                self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row + 1))
             if (row + 1) <= 7 and (col - 1) >= 0 and board.board[row + 1][col - 1].piece_on_square is not None and board.board[row + 1][col - 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))
+                # Examine if this move checks the opponent's King
+                if(board.board[row+1][col-1].piece_on_square.__str__()[0] == "K"):
+                    if(current_square.piece_on_square.colour == 'w'):
+                        board.black_king_check = True
+                    else:
+                        board.white_king_check = True
+                self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))
 
             # En Passant -> Later ...
 
@@ -63,9 +75,21 @@ class Pawn(Piece):
 
             # The pawn captures diagonally
             if (row - 1) >= 0 and (col - 1) >= 0 and board.board[row - 1][col - 1].piece_on_square is not None and board.board[row - 1][col - 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row - 1))
+                # Examine if this move checks the opponent's King
+                if(board.board[row-1][col-1].piece_on_square.__str__()[0] == "K"):
+                    if(current_square.piece_on_square.colour == 'w'):
+                        board.black_king_check = True
+                    else:
+                        board.white_king_check = True    
+                self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row - 1))
             if (row - 1) >= 0 and (col + 1) <= 7 and board.board[row - 1][col + 1].piece_on_square is not None and board.board[row - 1][col + 1].piece_on_square.colour != current_square.piece_on_square.colour:
-                    self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))
+                # Examine if this move checks the opponent's King
+                if(board.board[row-1][col+1].piece_on_square.__str__()[0] == "K"):
+                    if(current_square.piece_on_square.colour == 'w'):
+                        board.black_king_check = True
+                    else:
+                        board.white_king_check = True
+                self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))
 
 
             # En Passant -> Later ...
@@ -107,6 +131,12 @@ class Bishop(Piece):
 
                     # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                     else:
+                        # Examine if this move checks the opponent's King
+                        if(board.board[r][c].piece_on_square.__str__()[0] == "K"):
+                            if(current_square.piece_on_square.colour == 'w'):
+                                board.black_king_check = True
+                            else:
+                                board.white_king_check = True
                         self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
                         break
 
@@ -144,6 +174,12 @@ class Knight(Piece):
         for da, db in offsets:
             a, b = row + da, col + db
             if(0 <= a <= 7  and 0 <= b <= 7):
+                # Examine if this move checks the opponent's King
+                if(board.board[a][b].piece_on_square is not None and board.board[a][b].piece_on_square.__str__()[0] == "K"):
+                    if(current_square.piece_on_square.colour == 'w'):
+                        board.black_king_check = True
+                    else:
+                        board.white_king_check = True
                 if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
                     self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
@@ -183,6 +219,12 @@ class Rook(Piece):
 
                     # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                     else:
+                        # Examine if this move checks the opponent's King
+                        if(board.board[r][c].piece_on_square.__str__()[0] == "K"):
+                            if(current_square.piece_on_square.colour == 'w'):
+                                board.black_king_check = True
+                            else:
+                                board.white_king_check = True
                         self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
                         break
 
@@ -232,6 +274,12 @@ class Queen(Piece):
 
                     # If you find a piece of the opposite colour -> Append the square occupied by the piece in the list, Break the iteration
                     else:
+                        # Examine if this move checks the opponent's King
+                        if(board.board[r][c].piece_on_square.__str__()[0] == "K"):
+                            if(current_square.piece_on_square.colour == 'w'):
+                                board.black_king_check = True
+                            else:
+                                board.white_king_check = True
                         self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
                         break
 

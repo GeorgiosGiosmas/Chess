@@ -26,6 +26,10 @@ class Board():
         self.captured_black_pawns = []
         self.captured_white_pawns = []
         self.board = []
+        self.black_king_check = False
+        self.white_king_check = False
+        self.black_king_checkmate = False
+        self.white_king_checkmate = False
 
         self.files = "abcdefgh"
         self.ranks = "12345678"
@@ -133,12 +137,14 @@ class Board():
     def make_move(self, from_square: str, to_square: str, history: list):
 
         history_string = ""
+        capture = ""
         current_square = self.board_get_square(from_square)
         
         if(to_square in current_square.piece_on_square.valid_moves):
             future_square = self.board_get_square(to_square)
 
             if(future_square.piece_on_square is not None):
+                capture = "x"
                 if(future_square.piece_on_square.colour == 'b'):
                     self.captured_black_pawns.append(future_square.piece_on_square.__str__())
                 else:
@@ -149,10 +155,12 @@ class Board():
             future_square.piece_on_square = current_square.piece_on_square
             current_square.piece_on_square = None
 
-            if(piece=='P'):
-                history_string = str(len(history)+1) + "." + to_square + history_string
+            if(piece == 'P' and capture == "x"):
+                history_string = str(len(history)+1) + ". " + from_square[0] + capture + to_square + history_string
+            elif(piece == 'P'):
+                history_string = str(len(history)+1) + ". " + capture + to_square + history_string
             else:
-                history_string = str(len(history)+1) + "." + piece + to_square + history_string
+                history_string = str(len(history)+1) + ". " + piece + capture + to_square + history_string
             history.append(history_string)
 
             return 0
