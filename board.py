@@ -47,7 +47,7 @@ class Board():
 
     def board_initialize_pieces(self):
         # Initialize the Kings
-        self.board[self.ranks.index('6')][self.files.index('c')].piece_on_square = King('w') 
+        self.board[self.ranks.index('1')][self.files.index('e')].piece_on_square = King('w') 
         self.board[self.ranks.index('8')][self.files.index('e')].piece_on_square = King('b')
 
         # Initialize the Queens
@@ -76,12 +76,6 @@ class Board():
         for i in range(0, 8):
             self.board[self.ranks.index('2')][i].piece_on_square = Pawn('w')
             self.board[self.ranks.index('7')][i].piece_on_square = Pawn('b')
-
-    def demo_initialize(self):
-        self.board[self.ranks.index('6')][self.files.index('e')].piece_on_square = Pawn('w')
-        self.board[self.ranks.index('5')][self.files.index('f')].piece_on_square = Pawn('b')
-        self.board[self.ranks.index('5')][self.files.index('d')].piece_on_square = Pawn('w')
-        self.board[self.ranks.index('4')][self.files.index('e')].piece_on_square = Pawn('b')
 
     def print_board_state(self):
         #     -------------------------------------------------
@@ -128,6 +122,8 @@ class Board():
         return self.files[file]
     
     def get_all_pieces_moves(self):
+        self.black_king_check = False
+        self.white_king_check = False
         for row in range(8):
             for col in range(8):
                 if self.board[row][col].piece_on_square is not None:

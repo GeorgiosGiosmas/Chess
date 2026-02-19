@@ -79,10 +79,53 @@ def initial():
 # Examines if we have a Check, CheckMate, or Draw
 def examine():
     global board, what_happened, history
+    NotAValidChoice = Exception()
 
     # Check if either one of the two Kings is in check. If so, add + to the last move
     if(board.black_king_check == True or board.white_king_check == True):
         history[-1] = history[-1] + "+"
+
+    # Check for promotion
+    for i in range(8):
+        # Check for white promotion
+        if(board.board[7][i].piece_on_square is not None and board.board[7][i].piece_on_square.__str__()[0] == "P"):
+            while True:
+                try:
+                    new_piece = input("Select the piece you want to replace the Pawn with. You can choose 'R', 'N', 'B', 'Q': ")
+                    match new_piece:
+                        case 'R':
+                            board.board[7][i].piece_on_square = Rook('w')
+                        case 'N':
+                            board.board[7][i].piece_on_square = Knight('w')
+                        case 'B':
+                            board.board[7][i].piece_on_square = Bishop('w')
+                        case 'Q':
+                            board.board[7][i].piece_on_square = Queen('w')
+                        case _:
+                            raise NotAValidChoice
+                    break
+                except Exception as e:
+                    print(e + " - Try Again!")
+                
+        # Check for black promotion
+        elif(board.board[0][i].piece_on_square is not None and board.board[0][i].piece_on_square.__str__()[0] == "P"):
+            while True:
+                try:
+                    new_piece = input("Select the piece you want to replace the Pawn with. You can choose 'R', 'N', 'B', 'Q': ")
+                    match new_piece:
+                        case 'R':
+                            board.board[0][i].piece_on_square = Rook('b')
+                        case 'N':
+                            board.board[0][i].piece_on_square = Knight('b')
+                        case 'B':
+                            board.board[0][i].piece_on_square = Bishop('b')
+                        case 'Q':
+                            board.board[0][i].piece_on_square = Queen('b')
+                        case _:
+                            raise NotAValidChoice
+                    break
+                except Exception as e:
+                    print(e + " - Try Again!")
 
 # Alternates the playing sequence between black and white
 def next_turn():

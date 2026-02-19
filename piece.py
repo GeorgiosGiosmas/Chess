@@ -60,7 +60,6 @@ class Pawn(Piece):
 
             # En Passant -> Later ...
 
-            # Promotion -> Later ...
 
         # The black pawns move vertically downwards
         else:
@@ -94,7 +93,6 @@ class Pawn(Piece):
 
             # En Passant -> Later ...
 
-            # Promotion -> Later ...
 
         return self.valid_moves
     
