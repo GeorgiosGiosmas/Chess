@@ -3,23 +3,21 @@ class Piece():
         self.colour = colour
         self.valid_moves = []
 
-    def piece_get_valid_moves(self, current_square, board):
+    def piece_get_valid_moves(self, current_square, board, history):
         pass
-
-    def has_moved(self):
-        pass
-
 
 
 class Pawn(Piece):
     def __init__(self, colour):
         super().__init__(colour)
-        self.moved = False
+        self.has_moved = False
+        self.has_moved_twice = False
+        self.en_passant = []
 
     def __str__(self):
         return str("P" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square, board):
+    def piece_get_valid_moves(self, current_square, board, history):
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -58,8 +56,21 @@ class Pawn(Piece):
                         board.white_king_check = True
                 self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))
 
-            # En Passant -> Later ...
+            # En Passant
+            if(row == 4 and len(history) > 0):
+                if(col - 1 >= 0):
+                    ep1 = board.from_index_get_file(col-1) + rank
+                    if(history[-1].split()[-1] == ep1 and board.board[row][col-1].piece_on_square.has_moved_twice == False):
+                        self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))
+                        self.en_passant.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row + 1))  # Append en passant move en_passant[0]
+                        self.en_passant.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row)) # Append pawn to be captured en_passant[1]
 
+                if(col + 1 <= 7):
+                    ep2 = board.from_index_get_file(col+1) + rank
+                    if(history[-1].split()[-1] == ep2 and board.board[row][col+1].piece_on_square.has_moved_twice == False):
+                        self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row + 1))
+                        self.en_passant.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row + 1))  # Append en passant move en_passant[0]
+                        self.en_passant.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row)) # Append pawn to be captured en_passant[1]
 
         # The black pawns move vertically downwards
         else:
@@ -90,14 +101,23 @@ class Pawn(Piece):
                         board.white_king_check = True
                 self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))
 
+            # En Passant
+            if(row == 3 and len(history) > 0):
+                if(col - 1 >= 0):
+                    ep1 = board.from_index_get_file(col-1) + rank
+                    if(history[-1].split()[-1] == ep1 and board.board[row][col-1].piece_on_square.has_moved_twice == False):
+                        self.valid_moves.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row - 1))
+                        self.en_passant.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row - 1))  # Append en passant move en_passant[0]
+                        self.en_passant.append(board.from_index_get_file(col - 1) + board.from_index_get_rank(row)) # Append pawn to be captured en_passant[1]
 
-            # En Passant -> Later ...
-
+                if(col + 1 <= 7):
+                    ep2 = board.from_index_get_file(col+1) + rank
+                    if(history[-1].split()[-1] == ep2 and board.board[row][col+1].piece_on_square.has_moved_twice == False):
+                        self.valid_moves.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))
+                        self.en_passant.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row - 1))  # Append en passant move en_passant[0]
+                        self.en_passant.append(board.from_index_get_file(col + 1) + board.from_index_get_rank(row)) # Append pawn to be captured en_passant[1]
 
         return self.valid_moves
-    
-    def has_moved(self):
-        return self.moved
 
 class Bishop(Piece):
     def __init__(self, colour):
@@ -106,7 +126,7 @@ class Bishop(Piece):
     def __str__(self):
         return str("B" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square, board):
+    def piece_get_valid_moves(self, current_square, board, history):
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -146,9 +166,6 @@ class Bishop(Piece):
                 c += dc
 
         return self.valid_moves
-    
-    def has_moved(self):
-        pass
 
 class Knight(Piece):
     def __init__(self, colour):
@@ -157,7 +174,7 @@ class Knight(Piece):
     def __str__(self):
         return str("N" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square, board):
+    def piece_get_valid_moves(self, current_square, board, history):
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -182,19 +199,16 @@ class Knight(Piece):
                     self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
         return self.valid_moves
-    
-    def has_moved(self):
-        pass
 
 class Rook(Piece):
     def __init__(self, colour):
         super().__init__(colour)
-        self.moved = False
+        self.has_moved = False
 
     def __str__(self):
         return str("R" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square, board) -> list:
+    def piece_get_valid_moves(self, current_square, board, history) -> list:
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -234,10 +248,6 @@ class Rook(Piece):
                 c += dc
 
         return self.valid_moves
-        
-    
-    def has_moved(self):
-        return self.moved
 
 class Queen(Piece):
     def __init__(self, colour):
@@ -246,7 +256,7 @@ class Queen(Piece):
     def __str__(self):
         return str("Q" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square, board):
+    def piece_get_valid_moves(self, current_square, board, history):
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -290,19 +300,15 @@ class Queen(Piece):
 
         return self.valid_moves
 
-    
-    def has_moved(self):
-        pass
-
 class King(Piece):
     def __init__(self, colour):
         super().__init__(colour)
-        self.moved = False
+        self.has_moved = False
 
     def __str__(self):
         return str("K" + self.colour.upper())
 
-    def piece_get_valid_moves(self, current_square, board):
+    def piece_get_valid_moves(self, current_square, board, history):
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -321,10 +327,6 @@ class King(Piece):
                     self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
         return self.valid_moves
-    
-    def has_moved(self):
-        return self.moved
-
 
 if __name__ == "__main__":
     pass

@@ -121,13 +121,13 @@ class Board():
     def from_index_get_file(self, file):
         return self.files[file]
     
-    def get_all_pieces_moves(self):
+    def get_all_pieces_moves(self, history):
         self.black_king_check = False
         self.white_king_check = False
         for row in range(8):
             for col in range(8):
                 if self.board[row][col].piece_on_square is not None:
-                    self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self)
+                    self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self, history)
 
     
     def make_move(self, from_square: str, to_square: str, history: list):
@@ -150,6 +150,23 @@ class Board():
 
             future_square.piece_on_square = current_square.piece_on_square
             current_square.piece_on_square = None
+
+            if(piece == 'P' and len(future_square.piece_on_square.en_passant) > 0):
+                capture = "x"
+                if(to_square == future_square.piece_on_square.en_passant[0]):
+                    if(future_square.piece_on_square.colour == 'b'):
+                        self.captured_white_pawns.append(self.board_get_square(future_square.piece_on_square.en_passant[1]).piece_on_square.__str__())
+                    else:
+                        self.captured_black_pawns.append(self.board_get_square(future_square.piece_on_square.en_passant[1]).piece_on_square.__str__())
+                    self.board_get_square(future_square.piece_on_square.en_passant[1]).piece_on_square = None
+
+            # Update this variable. Necassary for En Passant
+            if(piece == "P" and future_square.piece_on_square.has_moved == True):
+                future_square.piece_on_square.has_moved_twice = True
+
+            # Update this variable. Necassary for En Passant and Castling
+            if(piece == 'P' or piece == 'K' or piece == 'R'):
+                future_square.piece_on_square.has_moved = True
 
             if(piece == 'P' and capture == "x"):
                 history_string = str(len(history)+1) + ". " + from_square[0] + capture + to_square + history_string
