@@ -151,6 +151,23 @@ class Board():
             future_square.piece_on_square = current_square.piece_on_square
             current_square.piece_on_square = None
 
+
+            # If we are castling the King, don't forget to also move the Rook
+            if(piece=='K' and abs(self.files.index(to_square[0]) - self.files.index(from_square[0])) > 1):
+                if(to_square == "g1"):
+                    self.board[0][5].piece_on_square = self.board[0][7].piece_on_square
+                    self.board[0][7].piece_on_square = None
+                elif(to_square == "c1"):
+                    self.board[0][3].piece_on_square = self.board[0][0].piece_on_square
+                    self.board[0][0].piece_on_square = None
+                elif(to_square == "g8"):
+                    self.board[7][5].piece_on_square = self.board[7][7].piece_on_square
+                    self.board[7][7].piece_on_square = None
+                elif(to_square == "c8"): 
+                    self.board[7][3].piece_on_square = self.board[7][0].piece_on_square
+                    self.board[7][0].piece_on_square = None
+
+            # If we have En Passant handle the Capture
             if(piece == 'P' and len(future_square.piece_on_square.en_passant) > 0):
                 capture = "x"
                 if(to_square == future_square.piece_on_square.en_passant[0]):
