@@ -124,11 +124,27 @@ class Board():
     def get_all_pieces_moves(self, history):
         self.black_king_check = False
         self.white_king_check = False
+
+        # First pass where we examine only the normal Piecies' moves
         for row in range(8):
             for col in range(8):
-                if self.board[row][col].piece_on_square is not None:
+                if self.board[row][col].piece_on_square is not None and self.board[row][col].piece_on_square.__str__()[0] != 'K':
                     self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self, history)
 
+        # Second pass where we examine only the Kings' moves
+        for row in range(8):
+            for col in range(8):
+                if self.board[row][col].piece_on_square is not None and self.board[row][col].piece_on_square.__str__()[0] == 'K':
+                    self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self, history)
+
+    def is_square_attacked_by(self, square_str, colour):
+        for row in range(8):
+            for col in range(8):
+                piece = self.board[row][col].piece_on_square
+                if piece is not None and piece.colour == colour:
+                    if square_str in piece.valid_moves:
+                        return True
+        return False
     
     def make_move(self, from_square: str, to_square: str, history: list):
 
@@ -201,7 +217,6 @@ if __name__ == "__main__":
     
     b = Board()
     b.board_initialize_pieces()
-    b.demo_initialize()
     b.print_board_state()
     a = b.board_get_square('f5')
     print(a)

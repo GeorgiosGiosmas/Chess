@@ -329,20 +329,20 @@ class King(Piece):
         # Check fo Castling if available
         if(not self.has_moved):
             if(self.colour == 'w' and not board.white_king_check):
-                if(board.board_get_square("f1").piece_on_square is None and board.board_get_square("g1").piece_on_square is None):
+                if(board.board_get_square("f1").piece_on_square is None and not board.is_square_attacked_by('f1', 'b') and board.board_get_square("g1").piece_on_square is None and not board.is_square_attacked_by('g1', 'b')):
                     h1 = board.board_get_square("h1").piece_on_square
                     if(h1 is not None and h1.__str__()[0] == "R" and h1.has_moved == False and h1.colour == "w"):
                         self.valid_moves.append(board.from_index_get_file(6) + board.from_index_get_rank(0))
-                if(board.board_get_square("d1").piece_on_square is None and board.board_get_square("c1").piece_on_square is None and board.board_get_square("b1").piece_on_square is None):
+                if(board.board_get_square("d1").piece_on_square is None and not board.is_square_attacked_by('d1', 'b') and board.board_get_square("c1").piece_on_square is None and not board.is_square_attacked_by('c1', 'b') and board.board_get_square("b1").piece_on_square is None and not board.is_square_attacked_by('b1', 'b')):
                     a1 = board.board_get_square("a1").piece_on_square
                     if(a1 is not None and a1.__str__()[0] == "R" and a1.has_moved == False and a1.colour == "w"):
                         self.valid_moves.append(board.from_index_get_file(2) + board.from_index_get_rank(0))
             elif(self.colour == 'b' and not board.black_king_check):
-                if(board.board_get_square("f8").piece_on_square is None and board.board_get_square("g8").piece_on_square is None):
+                if(board.board_get_square("f8").piece_on_square is None and not board.is_square_attacked_by('f8', 'w') and board.board_get_square("g8").piece_on_square is None and not board.is_square_attacked_by('g8', 'w')):
                     h8 = board.board_get_square("h8").piece_on_square
                     if(h8 is not None and h8.__str__()[0] == "R" and h8.has_moved == False and h8.colour == "b"):
                         self.valid_moves.append(board.from_index_get_file(6) + board.from_index_get_rank(7))
-                if(board.board_get_square("d8").piece_on_square is None and board.board_get_square("c8").piece_on_square is None and board.board_get_square("b8").piece_on_square is None):
+                if(board.board_get_square("d8").piece_on_square is None and not board.is_square_attacked_by('d8', 'w') and board.board_get_square("c8").piece_on_square is None and not board.is_square_attacked_by('c8', 'w') and board.board_get_square("b8").piece_on_square is None and not board.is_square_attacked_by('b8', 'w')):
                     a8 = board.board_get_square("a8").piece_on_square
                     if(a8 is not None and a8.__str__()[0] == "R" and a8.has_moved == False and a8.colour == "b"):
                         self.valid_moves.append(board.from_index_get_file(2) + board.from_index_get_rank(7))
