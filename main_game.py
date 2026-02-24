@@ -20,16 +20,7 @@ def human_plays(colour):
             if(board.board_get_square(from_square).piece_on_square is None or board.board_get_square(from_square).piece_on_square.colour != colour):
                 print("No valid piece on that square. Try again")
             else:
-                '''
-                piece = board.board_get_square(from_square).piece_on_square.__str__()[0]
-                if(colour == 'w' and board.white_king_check == True):
-                    if(piece != "K"):
-                        raise YouHaveToMoveTheKingException
-                elif(colour == 'b' and board.black_king_check == True):
-                    if(piece != "K"):
-                        raise YouHaveToMoveTheKingException
-                '''
-                if(board.make_move(from_square, to_square, history) == 0):
+              if(board.make_move(from_square, to_square, history) == 0):
                     break
 
         except Exception as e:
@@ -59,11 +50,11 @@ def print_info():
     if what_happened == "Black Played":
         print("The Black played: ", history[-1])
         if(board.white_king_check == True):
-            print("Your King is in check you have to move him!")
+            print("Your King is in check you have to protect him!")
     if what_happened == "White Played":
         print("The White played: ", history[-1])
         if(board.black_king_check == True):
-            print("Your King is in check you have to move him!")
+            print("Your King is in check you have to protect him!")
 
     board.print_board_state()
 
@@ -126,6 +117,24 @@ def examine():
                     break
                 except Exception as e:
                     print(e + " - Try Again!")
+        
+    # Check for Checkmate or Draw for the White King
+    if(board.white_king_square.piece_on_square.valid_moves == []):
+        if(board.white_king_check == True):
+            board.white_king_checkmate = True
+            what_happened = "Black Won"
+        else:
+            board.draw = True
+            what_happened = "Draw"
+
+    # Check for Checkmate or Draw for the Black King
+    if(board.black_king_square.piece_on_square.valid_moves == []):
+        if(board.black_king_check == True):
+            board.black_king_checkmate = True
+            what_happened = "White Won"
+        else:
+            board.draw = True
+            what_happened = "Draw"
 
 # Alternates the playing sequence between black and white
 def next_turn():
@@ -145,6 +154,35 @@ def next_turn():
             examine()
             print(" ------------ White Plays ------------ ")
             White_plays()
+        elif what_happened == "Draw":
+            print(" ---- The game ended with a draw ---- ")
+            play_again = input("Do you want to play again? (y/n): ")
+            if(play_again == 'y'):
+                board.reset()
+                what_happened = "Game Starts"
+            else:
+                print("Thank you for playing! :-)")
+                exit()
+            
+            board.reset()
+        elif what_happened == "White Won":
+            print(" ---- The white won with a checkmate ---- ")
+            play_again = input("Do you want to play again? (y/n): ")
+            if(play_again == 'y'):
+                board.reset()
+                what_happened = "Game Starts"
+            else:
+                print("Thank you for playing! :-)")
+                exit()
+        elif what_happened == "Black Won":
+            print(" ---- The black won with a checkmate ---- ")
+            play_again = input("Do you want to play again? (y/n): ")
+            if(play_again == 'y'):
+                board.reset()
+                what_happened = "Game Starts"
+            else:
+                print("Thank you for playing! :-)")
+                exit()
 
 if __name__ == "__main__":
     board = Board()

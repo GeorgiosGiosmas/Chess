@@ -323,8 +323,11 @@ class King(Piece):
         for da, db in offsets:
             a, b = row + da, col + db
             if(0 <= a <= 7  and 0 <= b <= 7):
-                if board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour:
-                    self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+                if(board.board[a][b].piece_on_square is None or board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour):
+                    if(self.colour == 'w' and not board.is_square_attacked_by(board.from_index_get_file(b) + board.from_index_get_rank(a), 'b')):
+                        self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
+                    elif(self.colour == 'b' and not board.is_square_attacked_by(board.from_index_get_file(b) + board.from_index_get_rank(a), 'w')):
+                        self.valid_moves.append(board.from_index_get_file(b) + board.from_index_get_rank(a))
 
         # Check fo Castling if available
         if(not self.has_moved):

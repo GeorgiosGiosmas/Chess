@@ -26,10 +26,13 @@ class Board():
         self.captured_black_pawns = []
         self.captured_white_pawns = []
         self.board = []
+        self.black_king_square = None
+        self.white_king_square = None
         self.black_king_check = False
         self.white_king_check = False
         self.black_king_checkmate = False
         self.white_king_checkmate = False
+        self.draw = False
 
         self.files = "abcdefgh"
         self.ranks = "12345678"
@@ -47,8 +50,10 @@ class Board():
 
     def board_initialize_pieces(self):
         # Initialize the Kings
-        self.board[self.ranks.index('1')][self.files.index('e')].piece_on_square = King('w') 
+        self.board[self.ranks.index('1')][self.files.index('e')].piece_on_square = King('w')
+        self.white_king_square = self.board[self.ranks.index('1')][self.files.index('e')]
         self.board[self.ranks.index('8')][self.files.index('e')].piece_on_square = King('b')
+        self.black_king_square = self.board[self.ranks.index('8')][self.files.index('e')]
 
         # Initialize the Queens
         self.board[self.ranks.index('1')][self.files.index('d')].piece_on_square = Queen('w') 
@@ -162,26 +167,29 @@ class Board():
                 else:
                     self.captured_white_pawns.append(future_square.piece_on_square.__str__())
 
-            piece = current_square.piece_on_square.__str__()[0] # Identify only the pice. We don't care about the colour
+            piece = current_square.piece_on_square.__str__()[0] # Identify only the piece. We don't care about the colour
 
             future_square.piece_on_square = current_square.piece_on_square
             current_square.piece_on_square = None
-
 
             # If we are castling the King, don't forget to also move the Rook
             if(piece=='K' and abs(self.files.index(to_square[0]) - self.files.index(from_square[0])) > 1):
                 if(to_square == "g1"):
                     self.board[0][5].piece_on_square = self.board[0][7].piece_on_square
                     self.board[0][7].piece_on_square = None
+                    history.append("0-0")
                 elif(to_square == "c1"):
                     self.board[0][3].piece_on_square = self.board[0][0].piece_on_square
                     self.board[0][0].piece_on_square = None
+                    history.append("0-0-0")
                 elif(to_square == "g8"):
                     self.board[7][5].piece_on_square = self.board[7][7].piece_on_square
                     self.board[7][7].piece_on_square = None
+                    history.append("0-0")
                 elif(to_square == "c8"): 
                     self.board[7][3].piece_on_square = self.board[7][0].piece_on_square
                     self.board[7][0].piece_on_square = None
+                    history.append("0-0-0")
 
             # If we have En Passant handle the Capture
             if(piece == 'P' and len(future_square.piece_on_square.en_passant) > 0):
@@ -201,6 +209,13 @@ class Board():
             if(piece == 'P' or piece == 'K' or piece == 'R'):
                 future_square.piece_on_square.has_moved = True
 
+            # Update the squares that point out the positions of the Kings, if they move
+            if(piece == 'K' and future_square.piece_on_square.colour == 'w'):
+                self.white_king_square = future_square
+            if(piece == 'K' and future_square.piece_on_square.colour == 'b'):
+                self.black_king_square = future_square
+
+            # Save the new history variable
             if(piece == 'P' and capture == "x"):
                 history_string = str(len(history)+1) + ". " + from_square[0] + capture + to_square + history_string
             elif(piece == 'P'):
@@ -212,6 +227,21 @@ class Board():
             return 0
         else:
             return -1
+        
+    def reset(self):
+        self.captured_black_pawns = []
+        self.captured_white_pawns = []
+        self.black_king_square = None
+        self.white_king_square = None
+        self.black_king_check = False
+        self.white_king_check = False
+        self.black_king_checkmate = False
+        self.white_king_checkmate = False
+        self.draw = False
+
+        for row in range(8):
+            for col in range(8):
+                self.board[row][col].piece_on_square = None
         
 if __name__ == "__main__":
     
