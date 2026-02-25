@@ -165,6 +165,7 @@ class Board():
 
         history_string = ""
         capture = ""
+        castling = ""
         current_square = self.board_get_square(from_square)
         
         if(to_square in current_square.piece_on_square.valid_moves):
@@ -187,19 +188,19 @@ class Board():
                 if(to_square == "g1"):
                     self.board[0][5].piece_on_square = self.board[0][7].piece_on_square
                     self.board[0][7].piece_on_square = None
-                    history.append("0-0")
+                    castling = "0-0"
                 elif(to_square == "c1"):
                     self.board[0][3].piece_on_square = self.board[0][0].piece_on_square
                     self.board[0][0].piece_on_square = None
-                    history.append("0-0-0")
+                    castling = "0-0-0"
                 elif(to_square == "g8"):
                     self.board[7][5].piece_on_square = self.board[7][7].piece_on_square
                     self.board[7][7].piece_on_square = None
-                    history.append("0-0")
+                    castling = "0-0"
                 elif(to_square == "c8"): 
                     self.board[7][3].piece_on_square = self.board[7][0].piece_on_square
                     self.board[7][0].piece_on_square = None
-                    history.append("0-0-0")
+                    castling = "0-0-0"
 
             # If we have En Passant handle the Capture
             if(piece == 'P' and len(future_square.piece_on_square.en_passant) > 0):
@@ -230,6 +231,8 @@ class Board():
                 history_string = str(len(history)+1) + ". " + from_square[0] + capture + to_square + history_string
             elif(piece == 'P'):
                 history_string = str(len(history)+1) + ". " + capture + to_square + history_string
+            elif(castling != ""):
+                history_string = str(len(history)+1) + ". " + castling + history_string
             else:
                 history_string = str(len(history)+1) + ". " + piece + capture + to_square + history_string
             history.append(history_string)
