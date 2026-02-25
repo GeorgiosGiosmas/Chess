@@ -143,11 +143,21 @@ class Board():
                     self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self, history)
 
     def is_square_attacked_by(self, square_str, colour):
+        target_row = self.from_rank_get_index(square_str[1])
+        target_col = self.from_file_get_index(square_str[0])
+        
         for row in range(8):
             for col in range(8):
                 piece = self.board[row][col].piece_on_square
                 if piece is not None and piece.colour == colour:
-                    if square_str in piece.valid_moves:
+                    # For pawns, check diagonal attack squares directly
+                    if piece.__str__()[0] == 'P':
+                        if colour == 'w' and row + 1 == target_row and abs(col - target_col) == 1:
+                            return True
+                        elif colour == 'b' and row - 1 == target_row and abs(col - target_col) == 1:
+                            return True
+                    # For all other pieces, use valid_moves
+                    elif square_str in piece.valid_moves:
                         return True
         return False
     

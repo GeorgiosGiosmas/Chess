@@ -64,6 +64,7 @@ def initial():
     global board, what_happened, history
 
     board.board_initialize_pieces()
+    board.get_all_pieces_moves(history)
     what_happened = "Black Played"
     next_turn()
 
@@ -123,6 +124,7 @@ def examine():
         if(board.white_king_check == True):
             board.white_king_checkmate = True
             what_happened = "Black Won"
+            history[-1] = history[-1] + "#"
         else:
             board.draw = True
             what_happened = "Draw"
@@ -132,25 +134,26 @@ def examine():
         if(board.black_king_check == True):
             board.black_king_checkmate = True
             what_happened = "White Won"
+            history[-1] = history[-1] + "#"
         else:
             board.draw = True
             what_happened = "Draw"
 
 # Alternates the playing sequence between black and white
 def next_turn():
-    global what_happened, board
+    global what_happened, board, history
     
     while True:
         if what_happened == "Game Starts":
             print("The game starts. The white play first.")
             initial()
         elif what_happened == "White Played":
-            board.get_all_pieces_moves()
+            board.get_all_pieces_moves(history)
             examine()
             print(" ------------ Black Plays ------------ ")
             Black_plays()
         elif what_happened == "Black Played":
-            board.get_all_pieces_moves()
+            board.get_all_pieces_moves(history)
             examine()
             print(" ------------ White Plays ------------ ")
             White_plays()
