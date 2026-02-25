@@ -156,8 +156,10 @@ class Bishop(Piece):
                                 board.black_king_check = True
                             else:
                                 board.white_king_check = True
-                        self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
-                        break
+                            self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                        else:
+                            self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                            break
 
                 # Otherwise keep adding every square as a valid move until the end of the iteration
                 else:
@@ -238,8 +240,10 @@ class Rook(Piece):
                                 board.black_king_check = True
                             else:
                                 board.white_king_check = True
-                        self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
-                        break
+                            self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                        else:
+                            self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                            break
 
                 # Otherwise keep adding every square as a valid move until the end of the iteration
                 else:
@@ -289,8 +293,10 @@ class Queen(Piece):
                                 board.black_king_check = True
                             else:
                                 board.white_king_check = True
-                        self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
-                        break
+                            self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                        else:
+                            self.valid_moves.append(board.from_index_get_file(c) + board.from_index_get_rank(r))
+                            break
 
                 # Otherwise keep adding every square as a valid move until the end of the iteration
                 else:
