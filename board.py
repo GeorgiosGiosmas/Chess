@@ -161,6 +161,55 @@ class Board():
                         return True
         return False
     
+    def filter_legal_moves(self, history):
+        """After get_all_pieces_moves, remove any move that leaves own King in check."""
+        for row in range(8):
+            for col in range(8):
+                piece = self.board[row][col].piece_on_square
+                if piece is None:
+                    continue
+                
+                legal_moves = []
+                from_sq = self.from_index_get_file(col) + self.from_index_get_rank(row)
+                
+                for move in piece.valid_moves:
+                    # 1. Save the current state
+                    to_sq = self.board_get_square(move)
+                    saved_piece = to_sq.piece_on_square
+                    
+                    # 2. Simulate the move
+                    to_sq.piece_on_square = piece
+                    self.board[row][col].piece_on_square = None
+                    
+                    # Update king square reference if it's a King moving
+                    if piece.__str__()[0] == 'K':
+                        if piece.colour == 'w':
+                            old_king_sq = self.white_king_square
+                            self.white_king_square = to_sq
+                        else:
+                            old_king_sq = self.black_king_square
+                            self.black_king_square = to_sq
+                    
+                    # 3. Recalculate opponent attacks and check if own King is attacked
+                    king_sq = self.white_king_square if piece.colour == 'w' else self.black_king_square
+                    king_pos = king_sq.file + king_sq.rank
+                    opponent = 'b' if piece.colour == 'w' else 'w'
+                    
+                    if not self.is_king_in_check_raw(king_pos, opponent):
+                        legal_moves.append(move)
+                    
+                    # 4. Undo the move
+                    self.board[row][col].piece_on_square = piece
+                    to_sq.piece_on_square = saved_piece
+                    
+                    if piece.__str__()[0] == 'K':
+                        if piece.colour == 'w':
+                            self.white_king_square = old_king_sq
+                        else:
+                            self.black_king_square = old_king_sq
+                
+                piece.valid_moves = legal_moves
+    
     def make_move(self, from_square: str, to_square: str, history: list):
 
         history_string = ""
