@@ -161,6 +161,52 @@ class Board():
                         return True
         return False
     
+    def is_king_in_check_raw(self, king_pos, opponent):
+
+        # Check from King's position if he is threatened by any piece of opponents colour 
+        row, col = self.from_rank_get_index(king_pos[1]), self.from_file_get_index(king_pos[0])
+        vertical_offsets = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        diagonal_offsets = [(1, 1), (-1, 1), (-1, -1), (1, -1)]
+        knights_offsets = [(1,2), (2,1), (2,-1), (1,-2), (-1,-2), (-2,-1), (-2,1), (-1,2)]
+        pawns_offsets = [(-1, -1), (-1, 1)] if opponent == 'w' else [(1, -1), (1, 1)]
+        for dr, dc in vertical_offsets:
+            r, c = row + dr, col + dc
+            while(0 <= r <= 7  and 0 <= c <= 7):
+                if(self.board[r][c].piece_on_square is not None and self.board[r][c].piece_on_square.colour == opponent and (self.board[r][c].piece_on_square.__str__()[0] == "R" or self.board[r][c].piece_on_square.__str__()[0] == "Q")):
+                    return True
+                
+                r += dr
+                c += dc
+
+        for dr, dc in diagonal_offsets:
+            r, c = row + dr, col + dc
+            while(0 <= r <= 7  and 0 <= c <= 7):
+                if(self.board[r][c].piece_on_square is not None and self.board[r][c].piece_on_square.colour == opponent and (self.board[r][c].piece_on_square.__str__()[0] == "B" or self.board[r][c].piece_on_square.__str__()[0] == "Q")):
+                    return True
+
+                r += dr
+                c += dc
+
+        for dr, dc in knights_offsets:
+            r, c = row + dr, col + dc
+            while(0 <= r <= 7  and 0 <= c <= 7):
+                if(self.board[r][c].piece_on_square is not None and self.board[r][c].piece_on_square.colour == opponent and self.board[r][c].piece_on_square.__str__()[0] == "N"):
+                    return True
+
+                r += dr
+                c += dc
+
+        for dr, dc in pawns_offsets:
+            r, c = row + dr, col + dc
+            while(0 <= r <= 7  and 0 <= c <= 7):
+                if(self.board[r][c].piece_on_square is not None and self.board[r][c].piece_on_square.colour == opponent and self.board[r][c].piece_on_square.__str__()[0] == "P"):
+                    return True
+
+                r += dr
+                c += dc
+
+        return False
+    
     def filter_legal_moves(self, history):
         """After get_all_pieces_moves, remove any move that leaves own King in check."""
         for row in range(8):

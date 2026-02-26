@@ -65,6 +65,7 @@ def initial():
 
     board.board_initialize_pieces()
     board.get_all_pieces_moves(history)
+    board.filter_legal_moves(history)
     what_happened = "Black Played"
     next_turn()
 
@@ -149,11 +150,13 @@ def next_turn():
             initial()
         elif what_happened == "White Played":
             board.get_all_pieces_moves(history)
+            board.filter_legal_moves(history)
             examine()
             print(" ------------ Black Plays ------------ ")
             Black_plays()
         elif what_happened == "Black Played":
             board.get_all_pieces_moves(history)
+            board.filter_legal_moves(history)
             examine()
             print(" ------------ White Plays ------------ ")
             White_plays()
