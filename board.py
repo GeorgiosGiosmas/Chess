@@ -260,6 +260,24 @@ class Board():
                             self.black_king_square = old_king_sq
                 
                 piece.valid_moves = legal_moves
+
+    def white_has_moves(self):
+        for row in range(8):
+            for col in range(8):
+                piece = self.board[row][col].piece_on_square
+                if piece is not None and piece.colour == "w" and len(piece.valid_moves) > 0:
+                    return True
+                
+        return False
+
+    def black_has_moves(self):
+        for row in range(8):
+            for col in range(8):
+                piece = self.board[row][col].piece_on_square
+                if piece is not None and piece.colour == "b" and len(piece.valid_moves) > 0:
+                    return True
+                
+        return False
     
     def make_move(self, from_square: str, to_square: str, history: list):
 
