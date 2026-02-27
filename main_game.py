@@ -121,7 +121,7 @@ def examine():
                     print(e + " - Try Again!")
         
     # Check for Checkmate or Draw for the White King
-    if(board.white_king_square.piece_on_square.valid_moves == []):
+    if(not board.white_has_moves()):
         if(board.white_king_check == True):
             board.white_king_checkmate = True
             what_happened = "Black Won"
@@ -131,7 +131,7 @@ def examine():
             what_happened = "Draw"
 
     # Check for Checkmate or Draw for the Black King
-    if(board.black_king_square.piece_on_square.valid_moves == []):
+    if(not board.black_has_moves()):
         if(board.black_king_check == True):
             board.black_king_checkmate = True
             what_happened = "White Won"
