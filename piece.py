@@ -193,7 +193,7 @@ class Knight(Piece):
             a, b = row + da, col + db
             if(0 <= a <= 7  and 0 <= b <= 7):
                 # Examine if this move checks the opponent's King
-                if(board.board[a][b].piece_on_square is not None and board.board[a][b].piece_on_square.__str__()[0] == "K" and board.board[a][b].piece_on_square != current_square.piece_on_square.colour):
+                if(board.board[a][b].piece_on_square is not None and board.board[a][b].piece_on_square.__str__()[0] == "K" and board.board[a][b].piece_on_square.colour != current_square.piece_on_square.colour):
                     if(current_square.piece_on_square.colour == 'w'):
                         board.black_king_check = True
                     else:
