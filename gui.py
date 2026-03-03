@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import PhotoImage
 
 class ChessGameGUI():
     def __init__(self, root):
@@ -24,6 +25,21 @@ class ChessGameGUI():
         self.gameButton.pack(side='left', fill='x', expand=1)
         self.restartButton = tk.Button(self.buttonFrame, text="Restart Game", bg="#efefef", command=self.game_restart)
         self.restartButton.pack(side='right', fill='x', expand=1)
+
+    def subimage(self, l, t, r, b):
+        dst = PhotoImage()
+        dst.tk.call(dst, 'copy', self.spritesheet, '-from', l, t, r, b, '-to', 0, 0)
+        return dst
+
+    def generate_images_from_sprite(self):
+        self.spritesheet = PhotoImage(file="Chess_Pieces_Sprite.gif")
+        self.num_sprites = 6
+        self.pieces = []
+        place = 0
+        self.images = {}
+        for x in "WB":
+            self.images[x] = [self.subimage(45*i, place, 45*(i+1), 45+place) for i in range(self.num_sprites)]
+            place += 45
 
     def game_restart(self):
         pass
