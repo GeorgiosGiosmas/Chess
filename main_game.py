@@ -1,5 +1,6 @@
 from piece import *
 from board import *
+from gui import *
 
 # Human plays
 def human_plays(colour):
@@ -191,7 +192,10 @@ def next_turn():
                 exit()
 
 if __name__ == "__main__":
+    root = tk.Tk()
     board = Board()
+    game = ChessGameGUI(root, board)
     what_happened = "Game Starts"
     history = []
+    root.mainloop()
     

@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import PhotoImage
-from main_game import *
+from board import *
+from piece import *
 
 class ChessGameGUI():
-    def __init__(self, root):
+    def __init__(self, root, board: Board):
         #### Game Parameters
-        self.board = Board()
+        self.board = board
+        self.images = {}
 
         #### GUI Parameters
         self.board_width, self.board_height = 720, 720
@@ -25,6 +27,7 @@ class ChessGameGUI():
         self.canvas = tk.Canvas(self.mainFrame, width = self.board_width, height = self.board_height, bg="#928777")
         self.canvas.pack(fill='both')
         self.draw_board()
+        self.draw_pieces()
 
         # Button Frame
         self.buttonFrame = tk.Frame(root)
@@ -41,12 +44,11 @@ class ChessGameGUI():
 
     def generate_images_from_sprite(self):
         self.spritesheet = PhotoImage(file="Chess_Pieces_Sprite.gif")
-        self.num_sprites = 6
-        self.pieces = []
+        self.pieces = ['K', 'Q', 'B', 'N', 'R', 'P']
         place = 0
-        self.images = {}
-        for x in "WB":
-            self.images[x] = [self.subimage(80*i, place, 80*(i+1), 80+place) for i in range(self.num_sprites)]
+        for c in "WB":
+            for i, p in enumerate(self.pieces):
+                self.images[p+c] = self.subimage(80*i, place, 80*(i+1), 80+place)
             place += 80
     
     def draw_board(self):
@@ -62,6 +64,17 @@ class ChessGameGUI():
         
         for i in range(8):
             self.canvas.create_text(80*(i+1)+40, 680, text=self.board.from_index_get_file(i), font=("Times New Roman", 18), fill="#333333")
+
+    def draw_pieces(self):
+        self.generate_images_from_sprite()
+        self.board.board_initialize_pieces()
+
+        for rank in range(8):
+            for file in range(8):
+                piece = self.board.board[7-rank][file].piece_on_square
+                if piece != None:
+                    self.canvas.create_image(80*(file+1), 80*rank, image=self.images[piece.__str__()], anchor='nw') 
+
 
     def game_restart(self):
         pass
