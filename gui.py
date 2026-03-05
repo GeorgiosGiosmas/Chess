@@ -26,6 +26,8 @@ class ChessGameGUI():
         self.mainFrame.pack()
         self.canvas = tk.Canvas(self.mainFrame, width = self.board_width, height = self.board_height, bg="#928777")
         self.canvas.pack(fill='both')
+        self.canvas.bind("<Button-1>", self.select_piece)
+        self.canvas.bind("<B1-Motion>", self.move_piece)
         self.draw_board()
         self.draw_pieces()
 
@@ -75,13 +77,20 @@ class ChessGameGUI():
                 if piece != None:
                     self.canvas.create_image(80*(file+1), 80*rank, image=self.images[piece.__str__()], anchor='nw') 
 
+    def select_piece(self, event):
+        self.selected_piece = None
+        self.position_x, self.position_y = event.x, event.y
+        if( 80 <= self.position_x <= 720 and 0 <= self.position_y <= 640):
+            pass 
 
-    def game_restart(self):
+    def move_piece(self, event):
         pass
 
     def start_game(self):
         pass
 
+    def game_restart(self):
+        pass
 
 if __name__ == "__main__":
     root = tk.Tk()
