@@ -28,6 +28,7 @@ class ChessGameGUI():
         self.canvas = tk.Canvas(self.mainFrame, width = self.board_width, height = self.board_height, bg="#928777")
         self.canvas.pack(fill='both')
         self.canvas.bind("<Button-1>", self.move_piece)
+        self.selected_square = None
         self.draw_board()
         self.draw_pieces()
 
@@ -85,32 +86,35 @@ class ChessGameGUI():
             self.new_selected_square_x, self.new_selected_square_y  = math.floor(self.position_x/80.0), math.floor(self.position_y/80.0)
             self.new_selected_square_x, self.new_selected_square_y = self.from_gui_to_board(self.new_selected_square_x, self.new_selected_square_y)
 
-            # If we don't have a selected square select it if has a piece on top of it
+            # If we don't have a selected square, select it if has a piece on top of it
             if(self.selected_square is None):
-                self.selected_square = self.board.board[self.new_selected_square_y][self.new_selected_square_x]
-                piece = self.selected_square.piece_on_square
-                if(piece is not None):
-                    self.redraw_square(self.selected_square, self.new_selected_square_x, self.new_selected_square_y, self.highlight_colour)
-                    self.old_selected_square_x, self.old_selected_square_y = self.new_selected_square_x, self.new_selected_square_y
+                self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
 
             # Pick a new square or decide the move for the selected square
             else:
                 # If we click on another square with our piece highlight it and reverse the highlighted square to its original colour
+                if(self.old_selected_square_x != self.new_selected_square_x or self.old_selected_square_y != self.new_selected_square_y):
+                    self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
+                    self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
 
 
+    def highlight_square(self, x, y):
+        self.selected_square = self.board.board[y][x]
+        piece = self.selected_square.piece_on_square
+        if(piece is not None):
+            self.new_selected_square_x, self.new_selected_square_y = self.from_board_to_gui(x, y)
+            self.redraw_square(self.selected_square, self.new_selected_square_x, self.new_selected_square_y, self.highlight_colour)
+            self.new_selected_square_x, self.new_selected_square_y = self.from_gui_to_board(self.new_selected_square_x, self.new_selected_square_y)
+            self.old_selected_square_x, self.old_selected_square_y = self.new_selected_square_x, self.new_selected_square_y
+        else:
+            self.selected_square = None
 
-            # Check if it already highlighted. If it is reverse it to its original colour
-            if(self.highlight_colour == self.squares_colour):
-                self.new_selected_square_x, self.new_selected_square_y = self.from_board_to_gui(self.new_selected_square_x, self.new_selected_square_y)
-                self.redraw_square(self.selected_square, self.new_selected_square_x, self.new_selected_square_y, self.squares_original_colour)
-                
-            # If square it is not highlighed, highlight it
-            else:
-                self.new_selected_square_x, self.new_selected_square_y = self.from_board_to_gui(self.new_selected_square_x, self.new_selected_square_y)
-                self.redraw_square(self.selected_square, self.new_selected_square_x, self.new_selected_square_y, self.highlight_colour)
-                self.squares_original_colour = self.squares_colour
-            
-            # If the square is not the highlighted square, reverse the highlighed square to its original colour and highlight the new one
+    def unhighlight_square(self, x, y):
+        old_squares_colour = self.get_square_colour(y, x)
+        self.old_selected_square = self.board.board[y][x]
+        self.old_selected_square_x, self.old_selected_square_y = self.from_board_to_gui(x, y)
+        self.redraw_square(self.old_selected_square, self.old_selected_square_x, self.old_selected_square_y, old_squares_colour)
+        self.old_selected_square_x, self.old_selected_square_y = self.new_selected_square_x, self.new_selected_square_y
 
     def redraw_square(self, square, x, y, colour):
         self.canvas.create_rectangle(80*x, 80*y, 80*(x+1), 80*(y+1), fill=colour)
@@ -126,9 +130,15 @@ class ChessGameGUI():
     
     def get_square_colour(self, rank, file):
         if (rank + file) % 2 == 0:
-            return "#b58863"
-        else:
             return "#f0d9b5"
+        else:
+            return "#b58863"
+    
+    def highlight_valid_moves_for_selected_piece(self, piece):
+        pass
+
+    def unhighlight_valid_moves_for_selected_piece(self, piece):
+        pass
 
     def start_game(self):
         pass
