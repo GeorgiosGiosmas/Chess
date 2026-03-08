@@ -67,8 +67,8 @@ class ChessGameGUI():
             self.canvas.create_text(80*(i+1)+40, 680, text=self.board.from_index_get_file(i), font=("Times New Roman", 18), fill="#333333")
 
     def draw_pieces(self):
-        self.generate_images_from_sprite()
-
+        self.canvas.delete("all")
+        self.draw_board()
         for rank in range(8):
             for file in range(8):
                 piece = self.board.board[7-rank][file].piece_on_square
@@ -91,13 +91,26 @@ class ChessGameGUI():
 
             # Pick a new square or decide the move for the selected square
             else:
-                # If we click on another square with our piece highlight it and reverse the highlighted square to its original colour
                 if(self.old_selected_square_x != self.new_selected_square_x or self.old_selected_square_y != self.new_selected_square_y):
-                    self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
-                    self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
-                    self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
-                    if(self.selected_square is not None):
-                        self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                    # If we click on another square check if it is in valid moves. If so, make the move.
+                    if(self.check_if_in_valid_moves(self.new_selected_square_x, self.new_selected_square_y)):
+                        current_square = self.board.from_index_get_file(self.old_selected_square_x) + self.board.from_index_get_rank(self.old_selected_square_y)
+                        future_square = self.board.from_index_get_file(self.new_selected_square_x) + self.board.from_index_get_rank(self.new_selected_square_y)
+                        self.board.make_move(current_square, future_square, self.history)
+                        self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                        self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
+                        self.draw_pieces()
+                        self.board.get_all_pieces_moves(self.history)
+                        self.board.filter_legal_moves(self.history)
+                        self.selected_square = None
+
+                    # Otherwise, highlight the new square and unhighlight the previous one
+                    else:
+                        self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                        self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
+                        self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
+                        if(self.selected_square is not None):
+                            self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
                 # If we click the same unhilight it
                 else:
                     self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
@@ -165,9 +178,16 @@ class ChessGameGUI():
             self.redraw_square(square, x, y, colour)
         self.highlighted_squares = []
 
+    def check_if_in_valid_moves(self, x, y):
+        if((x, y) in self.highlighted_squares):
+            return True
+        
+        return False
+
     def start_game(self):
         self.history = []
         self.selected_square = None
+        self.generate_images_from_sprite()
         self.board.board_initialize_pieces()
         self.draw_pieces()
         self.board.get_all_pieces_moves(self.history)
