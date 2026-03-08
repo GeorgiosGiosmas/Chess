@@ -28,9 +28,7 @@ class ChessGameGUI():
         self.canvas = tk.Canvas(self.mainFrame, width = self.board_width, height = self.board_height, bg="#928777")
         self.canvas.pack(fill='both')
         self.canvas.bind("<Button-1>", self.move_piece)
-        self.selected_square = None
         self.draw_board()
-        self.draw_pieces()
 
         # Button Frame
         self.buttonFrame = tk.Frame(root)
@@ -70,7 +68,6 @@ class ChessGameGUI():
 
     def draw_pieces(self):
         self.generate_images_from_sprite()
-        self.board.board_initialize_pieces()
 
         for rank in range(8):
             for file in range(8):
@@ -89,13 +86,23 @@ class ChessGameGUI():
             # If we don't have a selected square, select it if has a piece on top of it
             if(self.selected_square is None):
                 self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
+                if(self.selected_square is not None):
+                    self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
 
             # Pick a new square or decide the move for the selected square
             else:
                 # If we click on another square with our piece highlight it and reverse the highlighted square to its original colour
                 if(self.old_selected_square_x != self.new_selected_square_x or self.old_selected_square_y != self.new_selected_square_y):
+                    self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
                     self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
                     self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
+                    if(self.selected_square is not None):
+                        self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                # If we click the same unhilight it
+                else:
+                    self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                    self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
+                    self.selected_square = None
 
 
     def highlight_square(self, x, y):
@@ -111,9 +118,8 @@ class ChessGameGUI():
 
     def unhighlight_square(self, x, y):
         old_squares_colour = self.get_square_colour(y, x)
-        self.old_selected_square = self.board.board[y][x]
         self.old_selected_square_x, self.old_selected_square_y = self.from_board_to_gui(x, y)
-        self.redraw_square(self.old_selected_square, self.old_selected_square_x, self.old_selected_square_y, old_squares_colour)
+        self.redraw_square(self.selected_square, self.old_selected_square_x, self.old_selected_square_y, old_squares_colour)
         self.old_selected_square_x, self.old_selected_square_y = self.new_selected_square_x, self.new_selected_square_y
 
     def redraw_square(self, square, x, y, colour):
@@ -133,18 +139,42 @@ class ChessGameGUI():
             return "#f0d9b5"
         else:
             return "#b58863"
+        
+    def get_square_colour_highlight(self, rank, file):
+        if (rank + file) % 2 == 0:
+            return "#aad751"
+        else:
+            return "#7db83a"
     
-    def highlight_valid_moves_for_selected_piece(self, piece):
-        pass
+    def highlight_valid_moves_for_selected_piece(self, piece: Piece):
+        self.highlighted_squares = []
+        for move in piece.valid_moves:
+            square = self.board.board_get_square(move)
+            rank, file = move[1], move[0]
+            y, x = self.board.from_rank_get_index(rank), self.board.from_file_get_index(file)
+            self.highlighted_squares.append((x, y))
+            colour = self.get_square_colour_highlight(y, x)
+            x, y = self.from_board_to_gui(x, y)
+            self.redraw_square(square, x, y, colour)
 
-    def unhighlight_valid_moves_for_selected_piece(self, piece):
-        pass
+    def unhighlight_valid_moves_for_selected_piece(self, piece: Piece):
+        for x, y in self.highlighted_squares:
+            square = self.board.board[y][x]
+            colour = self.get_square_colour(y, x)
+            x, y = self.from_board_to_gui(x, y)
+            self.redraw_square(square, x, y, colour)
+        self.highlighted_squares = []
 
     def start_game(self):
-        pass
+        self.history = []
+        self.selected_square = None
+        self.board.board_initialize_pieces()
+        self.draw_pieces()
+        self.board.get_all_pieces_moves(self.history)
+        self.board.filter_legal_moves(self.history)
 
     def game_restart(self):
-        pass
+        self.start_game()
 
 if __name__ == "__main__":
     root = tk.Tk()
