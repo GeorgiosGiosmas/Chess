@@ -19,7 +19,7 @@ class ChessGameGUI():
         self.historyFrame = tk.Frame(root)
         self.historyFrame.pack()
         self.historyText = tk.StringVar()
-        self.historyLabel = tk.Label(self.historyFrame, textvariable=self.historyText, font='Arial 20', width=40)
+        self.historyLabel = tk.Label(self.historyFrame, textvariable=self.historyText, font='Arial 20', width=40, height=2)
         self.historyLabel.pack(fill='x')
         
         # Main/Canvas frame
@@ -83,45 +83,60 @@ class ChessGameGUI():
             self.new_selected_square_x, self.new_selected_square_y  = math.floor(self.position_x/80.0), math.floor(self.position_y/80.0)
             self.new_selected_square_x, self.new_selected_square_y = self.from_gui_to_board(self.new_selected_square_x, self.new_selected_square_y)
 
-            # If we don't have a selected square, select it if has a piece on top of it
-            if(self.selected_square is None):
-                self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
-                if(self.selected_square is not None):
-                    self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+            # If the game ended, stop all moves
+            if(not(self.board.white_king_checkmate or self.board.black_king_checkmate or self.board.draw)):
 
-            # Pick a new square or decide the move for the selected square
-            else:
-                if(self.old_selected_square_x != self.new_selected_square_x or self.old_selected_square_y != self.new_selected_square_y):
-                    # If we click on another square check if it is in valid moves. If so, make the move.
-                    if(self.check_if_in_valid_moves(self.new_selected_square_x, self.new_selected_square_y)):
-                        current_square = self.board.from_index_get_file(self.old_selected_square_x) + self.board.from_index_get_rank(self.old_selected_square_y)
-                        future_square = self.board.from_index_get_file(self.new_selected_square_x) + self.board.from_index_get_rank(self.new_selected_square_y)
-                        self.board.make_move(current_square, future_square, self.history)
-                        self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
-                        self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
-                        self.draw_pieces()
-                        self.board.get_all_pieces_moves(self.history)
-                        self.board.filter_legal_moves(self.history)
-                        self.selected_square = None
+                # If we don't have a selected square, select it if has a piece on top of it
+                if(self.selected_square is None):
+                    self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
+                    if(self.selected_square is not None):
+                        self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
 
-                    # Otherwise, highlight the new square and unhighlight the previous one
+                # Pick a new square or decide the move for the selected square
+                else:
+                    if(self.old_selected_square_x != self.new_selected_square_x or self.old_selected_square_y != self.new_selected_square_y):
+                        # If we click on another square check if it is in valid moves. If so, make the move.
+                        if(self.check_if_in_valid_moves(self.new_selected_square_x, self.new_selected_square_y)):
+                            current_square = self.board.from_index_get_file(self.old_selected_square_x) + self.board.from_index_get_rank(self.old_selected_square_y)
+                            future_square = self.board.from_index_get_file(self.new_selected_square_x) + self.board.from_index_get_rank(self.new_selected_square_y)
+                            self.board.make_move(current_square, future_square, self.history)
+                            self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                            self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
+                            self.draw_pieces()
+
+                            # Unhighlight a King if he is in check before computing get_all_pieces_moves()
+                            if self.board.white_king_check: self.unhighlight_king(self.board.white_king_square)
+                            if self.board.black_king_check: self.unhighlight_king(self.board.black_king_square)
+
+                            self.board.get_all_pieces_moves(self.history)
+                            self.board.filter_legal_moves(self.history)
+                            self.examine()
+                            self.selected_square = None
+
+                            # Change turn
+                            if(self.current_turn == 'b'): self.current_turn = 'w'
+                            else: self.current_turn = 'b'
+
+                            self.print_info()
+
+                        # Otherwise, highlight the new square and unhighlight the previous one
+                        else:
+                            self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                            self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
+                            self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
+                            if(self.selected_square is not None):
+                                self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
+                    # If we click the same unhilight it
                     else:
                         self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
                         self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
-                        self.highlight_square(self.new_selected_square_x, self.new_selected_square_y)
-                        if(self.selected_square is not None):
-                            self.highlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
-                # If we click the same unhilight it
-                else:
-                    self.unhighlight_valid_moves_for_selected_piece(self.selected_square.piece_on_square)
-                    self.unhighlight_square(self.old_selected_square_x, self.old_selected_square_y)
-                    self.selected_square = None
+                        self.selected_square = None
 
 
     def highlight_square(self, x, y):
         self.selected_square = self.board.board[y][x]
         piece = self.selected_square.piece_on_square
-        if(piece is not None):
+        if(piece is not None and piece.colour == self.current_turn):
             self.new_selected_square_x, self.new_selected_square_y = self.from_board_to_gui(x, y)
             self.redraw_square(self.selected_square, self.new_selected_square_x, self.new_selected_square_y, self.highlight_colour)
             self.new_selected_square_x, self.new_selected_square_y = self.from_gui_to_board(self.new_selected_square_x, self.new_selected_square_y)
@@ -134,6 +149,17 @@ class ChessGameGUI():
         self.old_selected_square_x, self.old_selected_square_y = self.from_board_to_gui(x, y)
         self.redraw_square(self.selected_square, self.old_selected_square_x, self.old_selected_square_y, old_squares_colour)
         self.old_selected_square_x, self.old_selected_square_y = self.new_selected_square_x, self.new_selected_square_y
+
+    def highlight_king(self, king_s, colour):
+        x, y = self.board.from_file_get_index(king_s.file), self.board.from_rank_get_index(king_s.rank)
+        gui_x, gui_y = self.from_board_to_gui(x, y)
+        self.redraw_square(king_s, gui_x, gui_y, colour)
+
+    def unhighlight_king(self, king_s):
+        x, y = self.board.from_file_get_index(king_s.file), self.board.from_rank_get_index(king_s.rank)
+        old_kings_colour = self.get_square_colour(y, x)
+        gui_x, gui_y = self.from_board_to_gui(x, y)
+        self.redraw_square(king_s, gui_x, gui_y, old_kings_colour)
 
     def redraw_square(self, square, x, y, colour):
         self.canvas.create_rectangle(80*x, 80*y, 80*(x+1), 80*(y+1), fill=colour)
@@ -183,17 +209,116 @@ class ChessGameGUI():
             return True
         
         return False
+    
+    def print_info(self):
+        if self.board.white_king_checkmate:
+            self.historyText.set("The Black won! King in Checkmate")
+        elif self.board.black_king_checkmate:
+            self.historyText.set("The White won! King in Checkmate")
+        elif self.current_turn == "w":
+            self.historyText.set("The Black played: " + self.history[-1][2:])
+            if(self.board.white_king_check == True):
+                prev_val = self.historyText.get()
+                self.historyText.set(prev_val + "\nWhite King is in check you have to protect him!")
+        elif self.current_turn == "b":
+            self.historyText.set("The White played: " + self.history[-1][2:])
+            if(self.board.black_king_check == True):
+                prev_val = self.historyText.get()
+                self.historyText.set(prev_val + "\nBlack King is in check you have to protect him!")
+
+    # Examines if we have a Check, CheckMate, or Draw
+    def examine(self):
+        NotAValidChoice = Exception()
+
+        # Check if either one of the two Kings is in check. If so, add + to the last move
+        if(self.board.black_king_check == True):
+            self.history[-1] = self.history[-1] + "+"
+            self.highlight_king(self.board.black_king_square, self.check_colour)
+
+        if(self.board.white_king_check == True):
+            self.history[-1] = self.history[-1] + "+"
+            self.highlight_king(self.board.white_king_square, self.check_colour)
+
+        # Check for promotion
+        for i in range(8):
+            # Check for white promotion
+            if(self.board.board[7][i].piece_on_square is not None and self.board.board[7][i].piece_on_square.__str__()[0] == "P"):
+                while True:
+                    try:
+                        new_piece = input("Select the piece you want to replace the Pawn with. You can choose 'R', 'N', 'B', 'Q': ")
+                        match new_piece:
+                            case 'R':
+                                self.board.board[7][i].piece_on_square = Rook('w')
+                            case 'N':
+                                self.board.board[7][i].piece_on_square = Knight('w')
+                            case 'B':
+                                self.board.board[7][i].piece_on_square = Bishop('w')
+                            case 'Q':
+                                self.board.board[7][i].piece_on_square = Queen('w')
+                            case _:
+                                raise NotAValidChoice
+                        break
+                    except Exception as e:
+                        print(e + " - Try Again!")
+                    
+            # Check for black promotion
+            elif(self.board.board[0][i].piece_on_square is not None and self.board.board[0][i].piece_on_square.__str__()[0] == "P"):
+                while True:
+                    try:
+                        new_piece = input("Select the piece you want to replace the Pawn with. You can choose 'R', 'N', 'B', 'Q': ")
+                        match new_piece:
+                            case 'R':
+                                self.board.board[0][i].piece_on_square = Rook('b')
+                            case 'N':
+                                self.board.board[0][i].piece_on_square = Knight('b')
+                            case 'B':
+                                self.board.board[0][i].piece_on_square = Bishop('b')
+                            case 'Q':
+                                self.board.board[0][i].piece_on_square = Queen('b')
+                            case _:
+                                raise NotAValidChoice
+                        break
+                    except Exception as e:
+                        print(e + " - Try Again!")
+            
+        # Check for Checkmate or Draw for the White King
+        if(not self.board.white_has_moves()):
+            if(self.board.white_king_check == True):
+                self.board.white_king_checkmate = True
+                self.history[-1] = self.history[-1] + "#"
+                self.highlight_king(self.board.white_king_square, self.checkmate_colour)
+            else:
+                self.highlight_king(self.board.white_king_square, self.draw_colour)
+                self.highlight_king(self.board.black_king_square, self.draw_colour)
+                self.board.draw = True
+
+        # Check for Checkmate or Draw for the Black King
+        if(not self.board.black_has_moves()):
+            if(self.board.black_king_check == True):
+                self.board.black_king_checkmate = True
+                self.history[-1] = self.history[-1] + "#"
+                self.highlight_king(self.board.black_king_square, self.checkmate_colour)
+            else:
+                self.highlight_king(self.board.white_king_square, self.draw_colour)
+                self.highlight_king(self.board.black_king_square, self.draw_colour)
+                self.board.draw = True
 
     def start_game(self):
         self.history = []
+        self.current_turn = 'w'
         self.selected_square = None
+        self.check_colour = "#e84040"
+        self.checkmate_colour = "#991a1a"
+        self.draw_colour = "#5a7d9a"
         self.generate_images_from_sprite()
         self.board.board_initialize_pieces()
         self.draw_pieces()
         self.board.get_all_pieces_moves(self.history)
         self.board.filter_legal_moves(self.history)
+        self.historyText.set("The White play first")
 
     def game_restart(self):
+        self.board.reset()
         self.start_game()
 
 if __name__ == "__main__":

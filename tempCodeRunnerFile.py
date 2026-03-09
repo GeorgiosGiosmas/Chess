@@ -1,2 +1,1 @@
-board.get_all_pieces_moves(history)
-            board.filter_legal_moves(history)
+black_king_check
