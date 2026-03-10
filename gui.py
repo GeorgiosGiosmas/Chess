@@ -230,7 +230,6 @@ class ChessGameGUI():
 
     # Examines if we have a Check, CheckMate, or Draw
     def examine(self):
-        NotAValidChoice = Exception()
 
         # Check if either one of the two Kings is in check. If so, add + to the last move
         if(self.board.black_king_check == True):
@@ -255,8 +254,6 @@ class ChessGameGUI():
                             self.board.board[7][i].piece_on_square = Bishop('w')
                         case 'Q':
                             self.board.board[7][i].piece_on_square = Queen('w')
-                        case _:
-                            raise NotAValidChoice
                     self.draw_pieces()
                     self.board.get_all_pieces_moves(self.history)
                     self.board.filter_legal_moves(self.history)
@@ -275,8 +272,6 @@ class ChessGameGUI():
                             self.board.board[0][i].piece_on_square = Bishop('b')
                         case 'Q':
                             self.board.board[0][i].piece_on_square = Queen('b')
-                        case _:
-                            raise NotAValidChoice
                     self.draw_pieces()
                     self.board.get_all_pieces_moves(self.history)
                     self.board.filter_legal_moves(self.history)
