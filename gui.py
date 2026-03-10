@@ -215,6 +215,8 @@ class ChessGameGUI():
             self.historyText.set("The Black won! King in Checkmate")
         elif self.board.black_king_checkmate:
             self.historyText.set("The White won! King in Checkmate")
+        elif self.board.draw:
+            self.historyText.set("The Game ended with a draw")
         elif self.current_turn == "w":
             self.historyText.set("The Black played: " + self.history[-1][2:])
             if(self.board.white_king_check == True):
@@ -243,43 +245,42 @@ class ChessGameGUI():
         for i in range(8):
             # Check for white promotion
             if(self.board.board[7][i].piece_on_square is not None and self.board.board[7][i].piece_on_square.__str__()[0] == "P"):
-                while True:
-                    try:
-                        new_piece = input("Select the piece you want to replace the Pawn with. You can choose 'R', 'N', 'B', 'Q': ")
-                        match new_piece:
-                            case 'R':
-                                self.board.board[7][i].piece_on_square = Rook('w')
-                            case 'N':
-                                self.board.board[7][i].piece_on_square = Knight('w')
-                            case 'B':
-                                self.board.board[7][i].piece_on_square = Bishop('w')
-                            case 'Q':
-                                self.board.board[7][i].piece_on_square = Queen('w')
-                            case _:
-                                raise NotAValidChoice
-                        break
-                    except Exception as e:
-                        print(e + " - Try Again!")
+                    new_piece = self.promote_pawn('w')
+                    match new_piece:
+                        case 'R':
+                            self.board.board[7][i].piece_on_square = Rook('w')
+                        case 'N':
+                            self.board.board[7][i].piece_on_square = Knight('w')
+                        case 'B':
+                            self.board.board[7][i].piece_on_square = Bishop('w')
+                        case 'Q':
+                            self.board.board[7][i].piece_on_square = Queen('w')
+                        case _:
+                            raise NotAValidChoice
+                    self.draw_pieces()
+                    self.board.get_all_pieces_moves(self.history)
+                    self.board.filter_legal_moves(self.history)
+                    break
+                  
                     
             # Check for black promotion
             elif(self.board.board[0][i].piece_on_square is not None and self.board.board[0][i].piece_on_square.__str__()[0] == "P"):
-                while True:
-                    try:
-                        new_piece = input("Select the piece you want to replace the Pawn with. You can choose 'R', 'N', 'B', 'Q': ")
-                        match new_piece:
-                            case 'R':
-                                self.board.board[0][i].piece_on_square = Rook('b')
-                            case 'N':
-                                self.board.board[0][i].piece_on_square = Knight('b')
-                            case 'B':
-                                self.board.board[0][i].piece_on_square = Bishop('b')
-                            case 'Q':
-                                self.board.board[0][i].piece_on_square = Queen('b')
-                            case _:
-                                raise NotAValidChoice
-                        break
-                    except Exception as e:
-                        print(e + " - Try Again!")
+                    new_piece = self.promote_pawn('b')
+                    match new_piece:
+                        case 'R':
+                            self.board.board[0][i].piece_on_square = Rook('b')
+                        case 'N':
+                            self.board.board[0][i].piece_on_square = Knight('b')
+                        case 'B':
+                            self.board.board[0][i].piece_on_square = Bishop('b')
+                        case 'Q':
+                            self.board.board[0][i].piece_on_square = Queen('b')
+                        case _:
+                            raise NotAValidChoice
+                    self.draw_pieces()
+                    self.board.get_all_pieces_moves(self.history)
+                    self.board.filter_legal_moves(self.history)
+                    break
             
         # Check for Checkmate or Draw for the White King
         if(not self.board.white_has_moves()):
@@ -302,6 +303,24 @@ class ChessGameGUI():
                 self.highlight_king(self.board.white_king_square, self.draw_colour)
                 self.highlight_king(self.board.black_king_square, self.draw_colour)
                 self.board.draw = True
+
+    def promote_pawn(self, colour):
+        popup = tk.Toplevel()
+        popup.title("Pawn Promotion")
+        popup.update_idletasks()
+        popup.grab_set()  # Makes popup modal
+        
+        choice = tk.StringVar(value='Q')  # Default to Queen
+        
+        pieces = ['Q', 'R', 'B', 'N']
+        for p in pieces:
+            btn = tk.Button(popup, image=self.images[p + colour.upper()],
+                            command=lambda piece=p: [choice.set(piece), popup.destroy()])
+            btn.pack(side='left', padx=5, pady=5)
+        
+        popup.wait_window()  # Blocks until popup is closed
+
+        return choice.get()
 
     def start_game(self):
         self.history = []
