@@ -55,7 +55,7 @@ class ChessGameGUI():
 
     def generate_images_from_sprite(self):
         """ Saves the subimages of the pieces into the images dictionary for future access. """
-        self.spritesheet = PhotoImage(file="Chess_Pieces_Sprite.gif")
+        self.spritesheet = PhotoImage(file="images/Chess_Pieces_Sprite.gif")
         self.pieces = ['K', 'Q', 'B', 'N', 'R', 'P']
         place = 0
         for c in "WB":
