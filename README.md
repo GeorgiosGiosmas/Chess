@@ -228,7 +228,7 @@ The 480x160 GIF sprite sheet contains 12 pieces (6 types x 2 colors) at 80x80 pi
 ## Author
 
 **Georgios Giosmas**
-- University of Patras — Electrical & Computer Engineering
+- Electrical & Computer Engineering Graduate
 - GitHub: [GeorgiosGiosmas](https://github.com/GeorgiosGiosmas)
 
 ## License
