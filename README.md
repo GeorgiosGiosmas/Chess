@@ -46,19 +46,19 @@ A complete chess application built entirely in Python — featuring a rules-comp
 
 ## Screenshots
 
-- initial board
+- Initial board
 ![initial_board](images/initial_board.png)
 
-- piece selected with legal moves
+- Piece selected with legal moves
 ![piece_selected_with_legal_moves](images/piece_selected_with_legal_moves.png)
 
-- check highlight
+- Check highlight
 ![check_highlight](images/check_highlight.png)
 
-- checkmate position
+- Checkmate position
 ![checkmate_position](images/checkmate_position.png)
 
-- promotion dialog
+- Promotion dialog
 ![promotion_dialog](images/promotion_dialog.png)
 
 ## Getting Started
@@ -228,7 +228,7 @@ The 480x160 GIF sprite sheet contains 12 pieces (6 types x 2 colors) at 80x80 pi
 ## Author
 
 **Georgios Giosmas**
-- University of Patras — Electrical & Computer Engineering
+- Electrical & Computer Engineering Graduate
 - GitHub: [GeorgiosGiosmas](https://github.com/GeorgiosGiosmas)
 
 ## License
