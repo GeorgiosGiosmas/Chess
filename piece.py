@@ -1,13 +1,35 @@
+"""
+Piece module - Includes all the pieces classes.
+All the pieces' classes inherit on base Piece() class which 
+defines the basic attributes colour and valid_moves.
+"""
+
 class Piece():
+    """ 
+    Piece Class - Basic parent class for all the other pieces.
+    It contains the colour of the piece, valid_moves list and 
+    the piece_get_valid_moves() method.
+    """
     def __init__(self, colour):
         self.colour = colour
         self.valid_moves = []
 
     def piece_get_valid_moves(self, current_square, board, history):
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the specified piece. This method is implemented inside 
+        the pieces' subclasses.
+
+        Args:
+            current_square  -> The square where the piece is placed
+            board           -> The board instance of the game
+            history         -> The list variable where previous moves are saved
+        """
         pass
 
 
 class Pawn(Piece):
+    """ Pawn Class - Class for the pawn piece """
     def __init__(self, colour):
         super().__init__(colour)
         self.has_moved = False
@@ -18,6 +40,20 @@ class Pawn(Piece):
         return str("P" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board, history):
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the Pawn.
+
+        White Pawns move vertically upwards and by one square except
+        their first move where they can move two squares if they want
+
+        Black Pawns move vertically downwards and by one square except
+        their first move where they can move two squares if they want
+
+        All Pawns capture diagonally. The En Passant move is also included.
+
+        This method also checks if any of the Kings gets in Check.
+        """
         self.valid_moves = []
         self.en_passant = []
 
@@ -121,6 +157,7 @@ class Pawn(Piece):
         return self.valid_moves
 
 class Bishop(Piece):
+    """ Bishop Class - Class of the Bishop piece. """
     def __init__(self, colour):
         super().__init__(colour)
 
@@ -128,6 +165,14 @@ class Bishop(Piece):
         return str("B" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board, history):
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the Bishop.
+
+        The Bishops move and capture diagonally.
+
+        This method also checks if any of the Kings gets in Check.
+        """
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -171,6 +216,7 @@ class Bishop(Piece):
         return self.valid_moves
 
 class Knight(Piece):
+    """ Knight Class - Class for the Knight piece. """
     def __init__(self, colour):
         super().__init__(colour)
 
@@ -178,6 +224,15 @@ class Knight(Piece):
         return str("N" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board, history):
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the Knight.
+
+        The Knights have 8 possible moves, L shaped, and are the only
+        pieces that can jump over other pieces.
+
+        This method also checks if any of the Kings gets in Check.
+        """
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -204,6 +259,7 @@ class Knight(Piece):
         return self.valid_moves
 
 class Rook(Piece):
+    """ Rook Class - Class for the Rook piece """
     def __init__(self, colour):
         super().__init__(colour)
         self.has_moved = False
@@ -212,6 +268,14 @@ class Rook(Piece):
         return str("R" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board, history) -> list:
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the Rook.
+
+        The Rooks move and capture vertically and horizontally.
+
+        This method also checks if any of the Kings gets in Check.
+        """
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -255,6 +319,7 @@ class Rook(Piece):
         return self.valid_moves
 
 class Queen(Piece):
+    """ Queen Class - Class for the Queen piece """
     def __init__(self, colour):
         super().__init__(colour)
 
@@ -262,6 +327,14 @@ class Queen(Piece):
         return str("Q" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board, history):
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the Queen.
+
+        The Queens move and capture diagonally, vertically and horizontally.
+
+        This method also checks if any of the Kings gets in Check.
+        """
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):
@@ -308,6 +381,7 @@ class Queen(Piece):
         return self.valid_moves
 
 class King(Piece):
+    """ King Class - Class for the King piece """
     def __init__(self, colour):
         super().__init__(colour)
         self.has_moved = False
@@ -316,6 +390,16 @@ class King(Piece):
         return str("K" + self.colour.upper())
 
     def piece_get_valid_moves(self, current_square, board, history):
+        """
+        piece_get_valid_moves() - Method that computes the valid
+        moves for the King.
+
+        The Kings move and capture diagonally, vertically and horizontally by a square.
+
+        They can perform Castling on both sides.
+
+        They can't move into a position that puts them into Check.
+        """
         self.valid_moves = []
 
         if(current_square.piece_on_square is None):

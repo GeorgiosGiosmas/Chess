@@ -1,9 +1,22 @@
+"""
+Game Module - Responsible for initializing the game.
+
+Playing without the GUI - You can play the game from terminal
+by utilising functions like human_play(), print_info(), examine()
+and next_turn() and the global variables Board, what_happened and history.
+
+Basic GUI - Use of the Chess engine alongside the GUI.
+
+"""
 from piece import *
 from board import *
 from gui import *
 
-# Human plays
 def human_plays(colour):
+    """
+    Function that is called when we don't use the GUI and want to get 
+    the input from the user.
+    """
     global board, what_happened, history
     NotValidMoveException = Exception()
     YouHaveToMoveTheKingException = Exception()
@@ -28,24 +41,24 @@ def human_plays(colour):
             print(e)
 
 
-# Computer plays - We will implement it later
 def computer_plays():
+    """ Computer plays - We will implement it later. """
     global board, what_happened, history
 
-# When Black plays
 def Black_plays():
+    """ When Black plays. """
     colour = 'b'
     human_plays(colour)
     what_happened = "Black Played"
 
-# When White plays
 def White_plays():
+    """ When White plays. """
     colour = 'w'
     human_plays(colour)
     what_happened = "White Played"
 
-# Prints the state of the board after every move
 def print_info():
+    """ Prints the state of the board after every move, when the GUI is not used. """
     global board, what_happened, history
 
     if what_happened == "Black Played":
@@ -59,9 +72,8 @@ def print_info():
 
     board.print_board_state()
 
-
-# Initializes the board
 def initial():
+    """ Initializes the board, when the GUI is not used. """
     global board, what_happened, history
 
     board.board_initialize_pieces()
@@ -70,8 +82,8 @@ def initial():
     what_happened = "Black Played"
     next_turn()
 
-# Examines if we have a Check, CheckMate, or Draw
 def examine():
+    """ Examines if we have Promotion, Check, CheckMate, or Draw, when the GUI is not used. """
     global board, what_happened, history
     NotAValidChoice = Exception()
 
@@ -141,8 +153,8 @@ def examine():
             board.draw = True
             what_happened = "Draw"
 
-# Alternates the playing sequence between black and white
 def next_turn():
+    """ Alternates the playing sequence between black and white, when the GUI is not used. """
     global what_happened, board, history
     
     while True:

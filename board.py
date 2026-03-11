@@ -1,6 +1,20 @@
+"""
+Board module - Contains two classes Square() and Board()
+Handles the board state, the generation of moves, the filtering of legal moves
+and the detection of check/checkmate/draw.
+"""
 from piece import King, Knight, Queen, Bishop, Rook, Pawn, Piece
 
 class Square():
+    """
+    Square Class - Connects the pieces with the Board.
+
+    Args:
+        rank            -> The rank of the Square
+        file            -> The file of the Square
+        colour          -> The colour of the Square
+        piece_on_square -> The piece placed on top of the Square
+    """
     def __init__(self, rank, file, colour, piece_on_square: Piece = None):
         self.rank = rank
         self.file = file
@@ -10,18 +24,30 @@ class Square():
     def __str__(self):
         return str(self.rank) + str(self.file) + str(self.colour)
     
+    
     def square_rank_file(self):
+        """ Returns the rank and file of the Square """
         return self.rank, self.file
     
     def occupied_by_piece(self):
+        """
+        Returns the string representation of the piece that occupies 
+        the Square or 'E' if there is not a piece on the Square.
+        """
         if self.piece_on_square is None: return ' E '
         else: return self.piece_on_square
-    
-    def is_highlighted(self):
-        pass
-
 
 class Board():
+    """
+    Board Class - Draws a 8x8 chess board by
+    creating Square's class objects.
+
+    Overall, it handles the entire flow of the game. This
+    flow includes initializing the board and pieces and reseting after the game, 
+    computing of valid moves for every piece and filtering of these moves 
+    according to chess regulations, generation of moves according to user's input
+    and checking of Check/Checkmate/Draw conditions. 
+    """
     def __init__(self):
         self.captured_black_pawns = []
         self.captured_white_pawns = []
@@ -49,6 +75,7 @@ class Board():
             self.board.append(r)
 
     def board_initialize_pieces(self):
+        """ This method initializes all the pieces to their initial position on the Chess Board. """
         # Initialize the Kings
         self.board[self.ranks.index('1')][self.files.index('e')].piece_on_square = King('w')
         self.white_king_square = self.board[self.ranks.index('1')][self.files.index('e')]
@@ -83,6 +110,10 @@ class Board():
             self.board[self.ranks.index('7')][i].piece_on_square = Pawn('b')
 
     def print_board_state(self):
+        """
+        This method prints the state of the board in the terminal. It helps 
+        visualize the board when we play the game without the gui.
+        """
         #     -------------------------------------------------
         #  8  | a8w | b8b | c8w | d8b | e8w | f8b | g8w | h8b |
         #     -------------------------------------------------
@@ -112,6 +143,10 @@ class Board():
         print("        a     b     c     d     e     f     g     h   ")
 
     def board_get_square(self, square: str) -> Square:
+        """
+        This method takes the string representation of a Square on the Board
+        and the returns the specified Square object.
+        """
         return self.board[self.ranks.index(square[1])][self.files.index(square[0])]
     
     def from_rank_get_index(self, rank):
@@ -127,10 +162,21 @@ class Board():
         return self.files[file]
     
     def get_all_pieces_moves(self, history):
+        """
+        This method iterates through every Square of the board and
+        computes the valid moves for every Piece by calling the
+        piece_get_valid_moves() method.
+
+        First it computes the valid moves for the other pieces.
+
+        The it computes the valid moves for the Kings. 
+
+        The reason for that distinction is to catch any arising Checks.
+        """
         self.black_king_check = False
         self.white_king_check = False
 
-        # First pass where we examine only the normal Piecies' moves
+        # First pass where we examine only the normal Pieces' moves
         for row in range(8):
             for col in range(8):
                 if self.board[row][col].piece_on_square is not None and self.board[row][col].piece_on_square.__str__()[0] != 'K':
@@ -143,6 +189,13 @@ class Board():
                     self.board[row][col].piece_on_square.piece_get_valid_moves(self.board[row][col] , self, history)
 
     def is_square_attacked_by(self, square_str, colour):
+        """
+        This method checks if the specified square is attacked by
+        a piece of a specified colour.
+
+        Useful when detecting if a square is attacked by an opponent's 
+        piece during Castling's detection. 
+        """
         target_row = self.from_rank_get_index(square_str[1])
         target_col = self.from_file_get_index(square_str[0])
         
@@ -162,8 +215,10 @@ class Board():
         return False
     
     def is_king_in_check_raw(self, king_pos, opponent):
-
-        # Check from King's position if he is threatened by any piece of opponents colour 
+        """
+        This method is called by filter_legal_moves(self, history) and checks from 
+        King's position if he is threatened by any any opponent's Piece.
+        """
         row, col = self.from_rank_get_index(king_pos[1]), self.from_file_get_index(king_pos[0])
         vertical_offsets = [(1, 0), (0, 1), (-1, 0), (0, -1)]
         diagonal_offsets = [(1, 1), (-1, 1), (-1, -1), (1, -1)]
@@ -213,7 +268,15 @@ class Board():
         return False
     
     def filter_legal_moves(self, history):
-        """After get_all_pieces_moves, remove any move that leaves own King in check."""
+        """
+        Remove any move that would leave the player's own King in check.
+        
+        For each piece's candidate moves, simulates the move, checks if the
+        King is still attacked, then undoes the move. Only safe moves survive.
+        
+        Args:
+            history: List of move strings for en passant tracking.
+        """
         for row in range(8):
             for col in range(8):
                 piece = self.board[row][col].piece_on_square
@@ -262,6 +325,7 @@ class Board():
                 piece.valid_moves = legal_moves
 
     def white_has_moves(self):
+        """ This method helps detecting whether the White King is in Checkmate. """
         for row in range(8):
             for col in range(8):
                 piece = self.board[row][col].piece_on_square
@@ -271,6 +335,7 @@ class Board():
         return False
 
     def black_has_moves(self):
+        """ This method helps detecting whether the Black King is in Checkmate. """
         for row in range(8):
             for col in range(8):
                 piece = self.board[row][col].piece_on_square
@@ -280,7 +345,17 @@ class Board():
         return False
     
     def make_move(self, from_square: str, to_square: str, history: list):
+        """
+        This method performs the moves for every piece. Check if the specified
+        move is in the valid_moves of the piece and if so it performs the move. It updates
+        the history variable and other flags necessary for the flow of the game and handles the En Passant 
+        Capture and Castling. 
 
+        Args:
+            from_square -> String representation of the current Square where the piece we want to move is placed.
+            to_square   -> String representation of the Square we want to move the piece into.
+            history     -> List variable the saves the performing move.
+        """
         history_string = ""
         capture = ""
         castling = ""
@@ -330,11 +405,11 @@ class Board():
                         self.captured_black_pawns.append(self.board_get_square(future_square.piece_on_square.en_passant[1]).piece_on_square.__str__())
                     self.board_get_square(future_square.piece_on_square.en_passant[1]).piece_on_square = None
 
-            # Update this variable. Necassary for En Passant
+            # Update this variable. Necessary for En Passant
             if(piece == "P" and future_square.piece_on_square.has_moved == True):
                 future_square.piece_on_square.has_moved_twice = True
 
-            # Update this variable. Necassary for En Passant and Castling
+            # Update this variable. Necessary for En Passant and Castling
             if(piece == 'P' or piece == 'K' or piece == 'R'):
                 future_square.piece_on_square.has_moved = True
 
@@ -360,6 +435,7 @@ class Board():
             return -1
         
     def reset(self):
+        """ This method resets the Board so you can play from the beginning. """
         self.captured_black_pawns = []
         self.captured_white_pawns = []
         self.black_king_square = None

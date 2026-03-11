@@ -1,3 +1,11 @@
+"""
+GUI module - Generates the Graphical User Interface
+for the game.
+
+Handles erasing and drawing of the canvas after every play, 
+placing of the Pieces' subimages, the move making and the 
+highlighting of squares.
+"""
 import tkinter as tk
 from tkinter import PhotoImage
 from board import *
@@ -6,6 +14,7 @@ import math
 
 class ChessGameGUI():
     def __init__(self, root, board: Board):
+        """ Initializes some game parameters and creates the History Frame, Canvas Frames and Button Frame. """
         #### Game Parameters
         self.board = board
         self.images = {}
@@ -39,11 +48,13 @@ class ChessGameGUI():
         self.restartButton.pack(side='right', fill='x', expand=1)
 
     def subimage(self, l, t, r, b):
+        """ Generates a subimage of the specified piece from the spritesheet. """
         dst = PhotoImage()
         dst.tk.call(dst, 'copy', self.spritesheet, '-from', l, t, r, b, '-to', 0, 0)
         return dst
 
     def generate_images_from_sprite(self):
+        """ Saves the subimages of the pieces into the images dictionary for future access. """
         self.spritesheet = PhotoImage(file="Chess_Pieces_Sprite.gif")
         self.pieces = ['K', 'Q', 'B', 'N', 'R', 'P']
         place = 0
@@ -52,7 +63,8 @@ class ChessGameGUI():
                 self.images[p+c] = self.subimage(80*i, place, 80*(i+1), 80+place)
             place += 80
     
-    def draw_board(self):
+    def draw_board(self): 
+        """ This method draws the 8x8 Board on the Canvas. """
         colour = 'white'
         for rank in range(8):
             if rank%2 == 0: colour = "#b58863"
@@ -67,6 +79,7 @@ class ChessGameGUI():
             self.canvas.create_text(80*(i+1)+40, 680, text=self.board.from_index_get_file(i), font=("Times New Roman", 18), fill="#333333")
 
     def draw_pieces(self):
+        """ This method accesses the images dictionary and draws all the pieces on the Canvas. """
         self.canvas.delete("all")
         self.draw_board()
         for rank in range(8):
@@ -76,6 +89,10 @@ class ChessGameGUI():
                     self.canvas.create_image(80*(file+1), 80*rank, image=self.images[piece.__str__()], anchor='nw') 
 
     def move_piece(self, event):
+        """ 
+        This method handles the selection and deselection of squares, the highlighting and unhighlighting of the selected Squares,
+        and the performing of moves to the newly selected squares. It also, defines the sequence of plays between Black and Whites,
+        through the current_turn variable and halts the game when the winner is found. """
         self.highlight_colour = "#f7ec59"
         self.position_x, self.position_y = event.x, event.y
 
@@ -134,6 +151,7 @@ class ChessGameGUI():
 
 
     def highlight_square(self, x, y):
+        """ This method highlights the specified square. """
         self.selected_square = self.board.board[y][x]
         piece = self.selected_square.piece_on_square
         if(piece is not None and piece.colour == self.current_turn):
@@ -145,47 +163,56 @@ class ChessGameGUI():
             self.selected_square = None
 
     def unhighlight_square(self, x, y):
+        """ This method unhighlights the specified square. """
         old_squares_colour = self.get_square_colour(y, x)
         self.old_selected_square_x, self.old_selected_square_y = self.from_board_to_gui(x, y)
         self.redraw_square(self.selected_square, self.old_selected_square_x, self.old_selected_square_y, old_squares_colour)
         self.old_selected_square_x, self.old_selected_square_y = self.new_selected_square_x, self.new_selected_square_y
 
     def highlight_king(self, king_s, colour):
+        """ This method highlights the specified King. """
         x, y = self.board.from_file_get_index(king_s.file), self.board.from_rank_get_index(king_s.rank)
         gui_x, gui_y = self.from_board_to_gui(x, y)
         self.redraw_square(king_s, gui_x, gui_y, colour)
 
     def unhighlight_king(self, king_s):
+        """ This method unhighlights the specified King. """
         x, y = self.board.from_file_get_index(king_s.file), self.board.from_rank_get_index(king_s.rank)
         old_kings_colour = self.get_square_colour(y, x)
         gui_x, gui_y = self.from_board_to_gui(x, y)
         self.redraw_square(king_s, gui_x, gui_y, old_kings_colour)
 
     def redraw_square(self, square, x, y, colour):
+        """ This method redraws a Square on the canvas with the specified colour. """
         self.canvas.create_rectangle(80*x, 80*y, 80*(x+1), 80*(y+1), fill=colour)
         piece = square.piece_on_square
         if(piece is not None):
             self.canvas.create_image(80*x, 80*y, image=self.images[piece.__str__()], anchor='nw') 
 
     def from_gui_to_board(self, x, y):
+        """ This methods transforms GUI Coordinates(Canvas Coordinates) to Board Coordinates. """
         return x - 1, 7 - y
     
     def from_board_to_gui(self, x, y):
+        """ This method transforms Board Coordinates to GUI Coordinates(Canvas Coordinates). """
         return x + 1, 7 - y
     
     def get_square_colour(self, rank, file):
+        """ This method returns the original colour for the specified Square. """
         if (rank + file) % 2 == 0:
             return "#f0d9b5"
         else:
             return "#b58863"
         
     def get_square_colour_highlight(self, rank, file):
+        """ This method returns the highlighting colour for the specified Square. """
         if (rank + file) % 2 == 0:
             return "#aad751"
         else:
             return "#7db83a"
     
     def highlight_valid_moves_for_selected_piece(self, piece: Piece):
+        """ This method is used to illustrate valid moves for the specified Piece. """
         self.highlighted_squares = []
         for move in piece.valid_moves:
             square = self.board.board_get_square(move)
@@ -197,6 +224,7 @@ class ChessGameGUI():
             self.redraw_square(square, x, y, colour)
 
     def unhighlight_valid_moves_for_selected_piece(self, piece: Piece):
+        """ This method is used to unhighlight valid moves for the previous specified Piece. """
         for x, y in self.highlighted_squares:
             square = self.board.board[y][x]
             colour = self.get_square_colour(y, x)
@@ -205,12 +233,14 @@ class ChessGameGUI():
         self.highlighted_squares = []
 
     def check_if_in_valid_moves(self, x, y):
+        """ This method checks if the selected Square is one of the highlighted Squares(valid moves)"""
         if((x, y) in self.highlighted_squares):
             return True
         
         return False
     
     def print_info(self):
+        """ This method prints necessary information about the game on the History Frame. """
         if self.board.white_king_checkmate:
             self.historyText.set("The Black won! King in Checkmate")
         elif self.board.black_king_checkmate:
@@ -230,7 +260,7 @@ class ChessGameGUI():
 
     # Examines if we have a Check, CheckMate, or Draw
     def examine(self):
-
+        """ Examines if we have Promotion, Check, CheckMate, or Draw, when the GUI is used. """
         # Check if either one of the two Kings is in check. If so, add + to the last move
         if(self.board.black_king_check == True):
             self.history[-1] = self.history[-1] + "+"
@@ -300,6 +330,7 @@ class ChessGameGUI():
                 self.board.draw = True
 
     def promote_pawn(self, colour):
+        """ This method handles the promotion of a Pawn by popping up a window and asking from the User the new Piece. """
         popup = tk.Toplevel()
         popup.title("Pawn Promotion")
         popup.update_idletasks()
@@ -318,6 +349,7 @@ class ChessGameGUI():
         return choice.get()
 
     def start_game(self):
+        """ This method is connected with the Game Start Button and initializes the game. """
         self.history = []
         self.current_turn = 'w'
         self.selected_square = None
@@ -332,6 +364,7 @@ class ChessGameGUI():
         self.historyText.set("The White play first")
 
     def game_restart(self):
+        """ This method is connected with the Restart Game Button and resets the game. """
         self.board.reset()
         self.start_game()
 
