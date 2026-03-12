@@ -34,7 +34,7 @@ class Square():
         Returns the string representation of the piece that occupies 
         the Square or 'E' if there is not a piece on the Square.
         """
-        if self.piece_on_square is None: return ' E '
+        if self.piece_on_square is None: return 'E '
         else: return self.piece_on_square
 
 class Board():
@@ -133,14 +133,14 @@ class Board():
         #     -------------------------------------------------
         #        a     b     c     d     e     f     g     h  
 
-        print("     -------------------------------------------------")
+        print("     ---------------------------------------------------------")
         for row in range(8):
             print(f"  {8-row}  |", end="")
             for col in range(8):
-                print(f" {self.board[7-row][col].occupied_by_piece()} |", end="")
+                print(f"  {self.board[7-row][col].occupied_by_piece()}  |", end="")
             print()
-            print("     -------------------------------------------------")
-        print("        a     b     c     d     e     f     g     h   ")
+            print("     ---------------------------------------------------------")
+        print("        a      b      c      d      e      f      g      h   ")
 
     def board_get_square(self, square: str) -> Square:
         """
