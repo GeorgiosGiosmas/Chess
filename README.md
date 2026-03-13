@@ -1,6 +1,6 @@
 # ♟ Python Chess Application
 
-A complete chess application built entirely in Python — featuring a rules-compliant engine, a graphical interface, and 100 automated tests. Designed as a portfolio project to demonstrate object-oriented design, algorithmic thinking, and GUI development.
+A complete chess application built entirely in Python — featuring a rules-compliant engine, a graphical interface, and 150 automated pytest tests across 9 categories. Designed as a portfolio project to demonstrate object-oriented design, algorithmic thinking, GUI development, and test automation.
 
 ## Table of Contents
 
@@ -44,6 +44,11 @@ A complete chess application built entirely in Python — featuring a rules-comp
 - Modal promotion dialog using `tk.Toplevel` with `wait_window()`
 - Game Start and Restart buttons
 
+### Testing
+- 150 automated tests covering 9 categories
+- Full pytest integration with fixtures, markers, and selective test execution
+- Standalone test runner also available (no pytest required)
+
 ## Screenshots
 
 - Initial board
@@ -68,11 +73,17 @@ A complete chess application built entirely in Python — featuring a rules-comp
 - Python 3.10 or higher (required for `match`/`case` syntax)
 - tkinter (included with standard Python installation)
 
-### Running the Game
+### Installation
 
 ```bash
 git clone https://github.com/GeorgiosGiosmas/Chess.git
 cd Chess
+pip install -r requirements.txt
+```
+
+### Running the Game
+
+```bash
 python main_game.py
 ```
 
@@ -85,8 +96,16 @@ python main_game.py
 ### Running the Tests
 
 ```bash
-python test_engine.py       # 50 engine-level tests
-python test_gui_logic.py    # 50 GUI-logic tests
+# Pytest (recommended)
+pytest tests/ -v                    # Run all 150 tests
+pytest tests/ -v -m castling        # Run only castling tests (23 tests)
+pytest tests/ -v -m en_passant      # Run only en passant tests (13 tests)
+pytest tests/ -v -m pins            # Run only pin tests (12 tests)
+pytest tests/ -v -k "fork"          # Search tests by keyword
+pytest tests/ -v -s                 # Show board printouts during tests
+
+# Standalone (no pytest required)
+python test_engine.py               # 150 tests with pass/fail summary
 ```
 
 ## Project Structure
@@ -110,13 +129,18 @@ Chess/
 │
 ├── Chess_Pieces_Sprite.gif  # Sprite sheet — 480x160, 6 pieces x 2 colors
 │
-├── test_engine.py           # 50 engine tests
+├── test_engine.py           # 150 standalone tests (no pytest required)
 │                            # Openings, piece movement, check, checkmate,
 │                            # stalemate, castling, en passant, pins, tactics
 │
-└── test_gui_logic.py        # 50 GUI-logic tests
-                             # Turn enforcement, valid move highlighting,
-                             # move execution, coordinate conversion, game flow
+├── tests/                   # Pytest test suite
+│   ├── conftest.py          # Shared fixtures: board_with_pieces, empty_board
+│   │                        # Helper functions: place_piece, make_move, compute_moves
+│   └── test_engine_pytest.py # 150 pytest tests organized into 9 test classes
+│                            # Markers: @pytest.mark.castling, .en_passant, .pins, etc.
+│
+├── pytest.ini               # Pytest configuration — registers custom markers
+└── requirements.txt         # Python dependencies (pytest)
 ```
 
 ## Chess Engine
@@ -176,26 +200,30 @@ The 480x160 GIF sprite sheet contains 12 pieces (6 types x 2 colors) at 80x80 pi
 
 ## Testing
 
-### Test Coverage — 100 Tests Total
+### Test Coverage — 150 Tests
 
 | Category | Tests | Description |
 |----------|-------|-------------|
-| Opening Positions | 5 | Initial move counts, Italian Game, pawn blocking |
-| Piece Movement | 10 | All 6 piece types — movement and restrictions |
-| Check Detection | 5 | Rank/file/diagonal checks, blocking, king restrictions |
-| Checkmate Patterns | 8 | Queen+King, ladder, Fool's mate, Scholar's mate |
-| Stalemate | 3 | Classic stalemate, non-stalemate verification |
-| Castling | 9 | Both sides, both colors, all blocking conditions |
-| En Passant | 4 | Left/right capture, expiration, black en passant |
-| Pins | 4 | Absolute pins by rook/bishop, movement along pin line |
-| X-Ray & Tactics | 2 | X-ray attacks, knight forks |
-| GUI Turn Enforcement | 5 | Piece selectability, turn alternation |
-| GUI Move Highlighting | 7 | Valid move counts, specific move validation |
-| GUI Move Execution | 8 | Board state after moves, captures, history |
-| GUI Check/Checkmate | 10 | Check detection, checkmate flags, stalemate |
-| GUI Castling/En Passant | 6 | Special moves through GUI pipeline |
-| GUI Coordinates | 5 | Coordinate conversion, roundtrip, square colors |
-| GUI Game Flow | 8 | Fool's mate simulation, game-ending states |
+| Opening Positions & Basic Moves | 15 | Move counts, Italian Game, Sicilian, Queen's Gambit, Ruy Lopez |
+| Piece Movement Validation | 22 | All 6 piece types — movement, captures, blocking, corner/edge cases |
+| Check Detection | 14 | Rank/file/diagonal checks, knight checks, blocking, king restrictions |
+| Checkmate Patterns | 22 | Queen+King, ladder, Fool's mate, Scholar's mate, back rank, smothered, Anastasia |
+| Stalemate / Draw | 9 | Classic stalemate, edge stalemate, pawn breaks stalemate |
+| Castling | 23 | Both sides, both colors, all blocking conditions, execution verification |
+| En Passant | 13 | Left/right capture, expiration, black en passant, edge files, execution |
+| Pins | 12 | Absolute pins by rook/bishop/queen, movement along pin line, pinned pawns |
+| X-Ray & Tactics | 20 | Knight forks, batteries, bishop pair, captures, notation, board reset, game flows |
+
+### Pytest Integration
+
+The test suite is fully integrated with pytest through a `tests/` directory:
+
+- **`conftest.py`** — Shared fixtures (`board_with_pieces`, `empty_board`) and helper functions (`place_piece`, `make_move`, `compute_moves`)
+- **`test_engine_pytest.py`** — 150 tests organized into 9 classes, one per category
+- **Custom markers** — `@pytest.mark.openings`, `@pytest.mark.castling`, `@pytest.mark.en_passant`, `@pytest.mark.pins`, `@pytest.mark.check`, `@pytest.mark.checkmate`, `@pytest.mark.stalemate`, `@pytest.mark.tactics` for selective execution
+- **`pytest.ini`** — Registers all custom markers
+
+A standalone `test_engine.py` is also available for running all 150 tests without pytest.
 
 ## Design Decisions
 
@@ -215,7 +243,7 @@ The 480x160 GIF sprite sheet contains 12 pieces (6 types x 2 colors) at 80x80 pi
 | 1 | **AI Opponent** | Minimax with alpha-beta pruning, material + positional evaluation |
 | 2 | **Drag & Drop** | B1-Motion event handling for piece dragging |
 | 3 | **Board Flipping** | Play as black with reversed board orientation |
-| 4 | **Pytest Migration** | Fixtures, parametrized tests, coverage reporting |
+| 4 | **Custom Piece Sprites** | AI-generated 80x80 pixel art chess pieces |
 
 ## Skills Demonstrated
 
@@ -223,7 +251,7 @@ The 480x160 GIF sprite sheet contains 12 pieces (6 types x 2 colors) at 80x80 pi
 - **Algorithmic Thinking** — Ray-casting for sliding pieces, simulate-and-undo for legal moves, L-shape offsets
 - **GUI Development** — tkinter Canvas, sprite extraction, event binding, modal dialogs, coordinate mapping
 - **Software Architecture** — Clean engine/GUI separation, event-driven design, state management
-- **Testing & QA** — 100 automated tests, edge case identification, regression testing
+- **Testing & QA** — 150 pytest tests with fixtures, markers, and selective execution
 
 ## Author
 
